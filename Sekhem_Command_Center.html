@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEKHEM · Biological Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--gold:#C9A84C;--gold-light:#E8C876;--gold-dim:#8B6F2E;
+--bg:#060608;--bg2:#0D0D12;--bg3:#141419;--bg4:#1A1A22;--bg5:#20202A;
+--white:#F5F0E8;--grey:#888899;--grey-light:#BBBBCC;
+--red:#C0392B;--amber:#E67E22;--green:#27AE60;--teal:#1A8C7A;--blue:#2471A3;
+--red-dim:#4A1010;--amber-dim:#3A2000;--green-dim:#0A2A1A;
+--font-display:'Cinzel',serif;--font-ui:'Rajdhani',sans-serif;--font-mono:'Share Tech Mono',monospace;--font-body:'Inter',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--font-ui);overflow:hidden}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(6,6,8,0.97);border-bottom:1px solid var(--gold-dim);height:56px;display:flex;align-items:center}
+.nav-brand{padding:0 20px;font-family:var(--font-display);font-size:13px;letter-spacing:3px;color:var(--gold);white-space:nowrap;border-right:1px solid var(--gold-dim);height:100%;display:flex;align-items:center}
+.nav-tabs{display:flex;overflow-x:auto;scrollbar-width:none;flex:1;height:100%}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{padding:0 14px;height:100%;display:flex;align-items:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);cursor:pointer;white-space:nowrap;border-right:1px solid rgba(201,168,76,0.1);transition:all 0.2s;position:relative;font-family:var(--font-ui);font-weight:600}
+.nav-tab:hover{color:var(--gold-light);background:rgba(201,168,76,0.05)}
+.nav-tab.active{color:var(--gold);background:rgba(201,168,76,0.08)}
+.nav-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold)}
+
+/* PANELS */
+#panels{position:fixed;top:56px;left:0;right:0;bottom:0;overflow:hidden}
+.panel{display:none;height:100%;overflow-y:auto;padding:24px;scrollbar-width:thin;scrollbar-color:var(--gold-dim) transparent}
+.panel.active{display:block}
+.panel::-webkit-scrollbar{width:4px}
+.panel::-webkit-scrollbar-thumb{background:var(--gold-dim)}
+
+/* COMMON */
+.panel-title{font-family:var(--font-display);font-size:22px;color:var(--gold);letter-spacing:4px;margin-bottom:4px}
+.panel-sub{font-size:11px;color:var(--grey);letter-spacing:2px;margin-bottom:24px}
+.gold-line{height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:24px}
+.section-head{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin:20px 0 10px;font-weight:700}
+.card{background:var(--bg3);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:16px;margin-bottom:12px}
+.card-title{font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;font-weight:700}
+.btn{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);padding:8px 16px;font-family:var(--font-ui);font-size:10px;letter-spacing:2px;cursor:pointer;transition:all 0.2s;border-radius:2px}
+.btn:hover{background:rgba(201,168,76,0.1);border-color:var(--gold)}
+.btn-primary{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.btn-primary:hover{background:var(--gold-light)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+input[type=text],input[type=number],input[type=date],textarea,select{background:var(--bg4);border:1px solid rgba(201,168,76,0.2);color:var(--white);padding:8px 10px;font-family:var(--font-mono);font-size:12px;border-radius:2px;width:100%;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+label{font-size:10px;letter-spacing:1px;color:var(--grey);display:block;margin-bottom:4px}
+.tag{display:inline-block;padding:2px 8px;font-size:9px;letter-spacing:1px;border-radius:2px;margin:2px}
+.tag-red{background:var(--red-dim);color:#FF9999;border:1px solid var(--red)}
+.tag-amber{background:var(--amber-dim);color:#FFB366;border:1px solid var(--amber)}
+.tag-green{background:var(--green-dim);color:#5EF09E;border:1px solid var(--green)}
+.tag-gold{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid var(--gold-dim)}
+.progress-bar{background:var(--bg4);border-radius:2px;height:6px;overflow:hidden;margin:6px 0}
+.progress-fill{height:100%;border-radius:2px;transition:width 0.5s}
+.mono{font-family:var(--font-mono);font-size:12px}
+.text-red{color:#FF8888}
+.text-amber{color:#FFB366}
+.text-green{color:#5EF09E}
+.text-gold{color:var(--gold)}
+.text-grey{color:var(--grey)}
+.text-sm{font-size:11px}
+.text-xs{font-size:10px}
+.pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.stat-big{font-family:var(--font-mono);font-size:28px;color:var(--gold);line-height:1}
+.divider{height:1px;background:rgba(201,168,76,0.1);margin:16px 0}
+.notes-area{width:100%;min-height:80px;resize:vertical;margin-top:8px}
+
+/* ── MISSION CONTROL ── */
+#mission .root-banner{background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.03));border:1px solid var(--gold-dim);border-left:3px solid var(--gold);padding:14px 18px;margin-bottom:20px;border-radius:2px}
+#mission .root-banner p{font-size:12px;color:var(--grey-light);line-height:1.7}
+#mission .root-banner strong{color:var(--gold);font-family:var(--font-display);font-size:13px}
+.next-action{background:linear-gradient(135deg,rgba(26,140,122,0.15),rgba(26,140,122,0.05));border:1px solid var(--teal);padding:14px;border-radius:4px;margin-bottom:20px}
+.next-action-label{font-size:9px;letter-spacing:3px;color:var(--teal);margin-bottom:6px}
+.next-action-text{font-size:14px;color:var(--white);font-weight:600;letter-spacing:1px}
+.current-peptide-banner{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03));border:1px solid var(--gold-dim);padding:12px 16px;border-radius:4px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.checklist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:10px}
+.check-item{background:var(--bg3);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:10px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px}
+.check-item.done{background:rgba(39,174,96,0.1);border-color:var(--green)}
+.check-box{width:18px;height:18px;border:1px solid var(--gold-dim);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;transition:all 0.2s}
+.check-item.done .check-box{background:var(--green);border-color:var(--green);color:var(--bg)}
+.check-label{font-size:10px;letter-spacing:1px;color:var(--grey-light)}
+.streak-badge{font-size:9px;color:var(--gold);margin-left:auto}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.kpi{background:var(--bg3);border:1px solid rgba(201,168,76,0.15);padding:14px;border-radius:4px;text-align:center}
+.kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--gold)}
+.kpi-label{font-size:9px;letter-spacing:2px;color:var(--grey);margin-top:4px}
+
+/* ── BIOMARKERS ── */
+.bm-card{background:var(--bg3);border-radius:4px;padding:12px 14px;margin-bottom:8px;border-left:3px solid transparent}
+.bm-card.critical{border-left-color:var(--red)}
+.bm-card.subopt{border-left-color:var(--amber)}
+.bm-card.ok{border-left-color:var(--green)}
+.bm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.bm-name{font-size:12px;font-weight:700;letter-spacing:1px}
+.bm-val{font-family:var(--font-mono);font-size:14px}
+.bm-ref{font-size:10px;color:var(--grey)}
+.bm-target{font-size:10px;color:var(--teal)}
+
+/* ── PEPTIDES ── */
+.peptide-timeline{display:flex;overflow-x:auto;gap:0;padding-bottom:16px;scrollbar-width:thin;scrollbar-color:var(--gold-dim) transparent;margin-bottom:20px}
+.peptide-node{flex-shrink:0;width:180px;background:var(--bg3);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:12px;cursor:pointer;transition:all 0.2s;position:relative;margin-right:2px}
+.peptide-node:hover{border-color:var(--gold);background:var(--bg4)}
+.peptide-node.active-peptide{border-color:var(--green);background:rgba(39,174,96,0.08)}
+.peptide-node.locked{opacity:0.4}
+.peptide-node.current{border-color:var(--gold);box-shadow:0 0 12px rgba(201,168,76,0.3)}
+.p-week{font-size:9px;letter-spacing:2px;color:var(--gold);margin-bottom:4px}
+.p-name{font-size:12px;font-weight:700;margin-bottom:4px}
+.p-cat{font-size:9px;color:var(--grey);letter-spacing:1px}
+.p-connector{width:12px;height:2px;background:var(--gold-dim);align-self:center;flex-shrink:0}
+.peptide-detail{background:var(--bg3);border:1px solid var(--gold-dim);border-radius:4px;padding:20px;margin-bottom:16px;display:none}
+.peptide-detail.show{display:block}
+.pd-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+.pd-field{margin-bottom:10px}
+.pd-label{font-size:9px;letter-spacing:2px;color:var(--gold);margin-bottom:4px}
+.pd-value{font-size:11px;line-height:1.6;color:var(--grey-light)}
+
+/* ── HBOT ── */
+.hbot-sessions{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:16px}
+.session-dot{width:100%;aspect-ratio:1;border-radius:2px;background:var(--bg4);border:1px solid rgba(201,168,76,0.2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:7px;color:transparent;transition:all 0.2s}
+.session-dot.done{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.session-dot.done:hover{background:var(--red-dim);color:var(--red);border-color:var(--red)}
+.session-dot:not(.done):hover{border-color:var(--gold);background:rgba(201,168,76,0.1)}
+.cairo-block{background:var(--bg3);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:14px;margin-bottom:10px}
+.cairo-block-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cairo-block-title{font-size:12px;font-weight:700;color:var(--gold)}
+.cairo-block-dates{font-family:var(--font-mono);font-size:11px;color:var(--grey)}
+
+/* ── TIMELINE ── */
+.phase-block{border-radius:4px;overflow:hidden;margin-bottom:16px}
+.phase-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.phase-title{font-family:var(--font-display);font-size:14px;letter-spacing:2px}
+.phase-weeks{font-size:10px;letter-spacing:1px;opacity:0.7}
+.timeline-row{display:flex;gap:0;padding:8px 16px;border-top:1px solid rgba(255,255,255,0.05)}
+.timeline-week{font-family:var(--font-mono);font-size:10px;color:var(--gold);width:70px;flex-shrink:0;padding-top:2px}
+.timeline-peptide{font-size:11px;color:#5EF09E;width:180px;flex-shrink:0}
+.timeline-other{font-size:10px;color:var(--grey-light);flex:1}
+
+/* ── SUPPLEMENTS ── */
+.supp-week{margin-bottom:20px}
+.supp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.supp-card{background:var(--bg3);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:12px}
+.supp-name{font-size:12px;font-weight:700;margin-bottom:4px;color:var(--white)}
+.supp-dose{font-family:var(--font-mono);font-size:11px;color:var(--gold);margin-bottom:2px}
+.supp-time{font-size:10px;color:var(--grey)}
+.supp-why{font-size:10px;color:var(--grey-light);margin-top:6px;line-height:1.5}
+
+/* ── PROGRESS TRACKER ── */
+.quarter-block{background:var(--bg3);border:1px solid rgba(201,168,76,0.2);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.quarter-header{background:rgba(201,168,76,0.08);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,0.2)}
+.quarter-title{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--gold)}
+.bm-input-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center}
+.bm-input-row:hover{background:rgba(201,168,76,0.03)}
+.bm-input-name{font-size:11px;color:var(--grey-light)}
+.bm-input-base{font-family:var(--font-mono);font-size:11px;color:var(--grey)}
+.bm-input-target{font-family:var(--font-mono);font-size:11px;color:var(--teal)}
+.bm-input-field{background:var(--bg4);border:1px solid rgba(201,168,76,0.2);color:var(--white);padding:4px 8px;font-family:var(--font-mono);font-size:11px;border-radius:2px;width:100%;outline:none}
+.bm-input-field:focus{border-color:var(--gold)}
+.bm-status-dot{width:10px;height:10px;border-radius:50%;margin:auto}
+.bm-header-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;padding:6px 16px;background:var(--bg4)}
+.bm-header-cell{font-size:9px;letter-spacing:2px;color:var(--gold)}
+
+/* ── BODY COMPOSITION ── */
+.body-comp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.bc-metric{background:var(--bg3);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:14px;text-align:center}
+.bc-val{font-family:var(--font-mono);font-size:20px;color:var(--gold);font-weight:700}
+.bc-baseline{font-size:9px;color:var(--grey);margin-top:2px}
+.bc-target{font-size:9px;color:var(--teal);margin-top:2px}
+.bc-label{font-size:9px;letter-spacing:1px;color:var(--grey);margin-top:6px;text-transform:uppercase}
+.quarter-comp{background:var(--bg3);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:16px;margin-bottom:12px}
+.comp-inputs{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}
+
+/* ── TREATMENT LOG ── */
+.log-entry{background:var(--bg3);border:1px solid rgba(201,168,76,0.12);border-radius:4px;padding:12px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.log-date{font-family:var(--font-mono);font-size:11px;color:var(--gold);width:90px;flex-shrink:0}
+.log-type{font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:2px;flex-shrink:0;margin-right:8px}
+.log-note{font-size:11px;color:var(--grey-light);flex:1;line-height:1.5}
+.log-add-form{background:var(--bg3);border:1px solid var(--gold-dim);border-radius:4px;padding:16px;margin-bottom:16px}
+.log-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+
+/* ── DIET ── */
+.food-list{columns:2;gap:20px}
+.food-item{font-size:11px;color:var(--grey-light);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);break-inside:avoid;display:flex;gap:8px}
+.food-item::before{content:'›';color:var(--gold);flex-shrink:0}
+.food-item.avoid::before{content:'✕';color:var(--red);flex-shrink:0}
+.meal-time-block{background:var(--bg3);border-left:3px solid var(--gold-dim);padding:12px 16px;margin-bottom:10px;border-radius:0 4px 4px 0}
+.meal-time{font-family:var(--font-mono);font-size:12px;color:var(--gold);margin-bottom:4px}
+
+/* ── FASTING ── */
+.fast-calendar{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px}
+.fast-event{background:var(--bg3);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:12px;text-align:center}
+.fast-month{font-size:9px;letter-spacing:2px;color:var(--gold);margin-bottom:4px}
+.fast-dur{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px}
+.fast-type{font-size:9px;color:var(--grey)}
+.countdown-box{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03));border:1px solid var(--gold-dim);border-radius:4px;padding:20px;text-align:center;margin-bottom:20px}
+.countdown-num{font-family:var(--font-mono);font-size:36px;color:var(--gold);font-weight:700}
+.countdown-label{font-size:10px;letter-spacing:2px;color:var(--grey);margin-top:4px}
+.fast-protocol-step{display:flex;gap:14px;padding:10px 14px;background:var(--bg3);border-bottom:1px solid rgba(255,255,255,0.04)}
+.fast-hour{font-family:var(--font-mono);font-size:11px;color:var(--gold);width:80px;flex-shrink:0}
+.fast-desc{font-size:11px;color:var(--grey-light);line-height:1.5}
+
+/* ── DAILY SCHEDULE ── */
+.schedule-row{display:flex;gap:14px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.2s}
+.schedule-row:hover{background:var(--bg3)}
+.sched-time{font-family:var(--font-mono);font-size:11px;color:var(--gold);width:70px;flex-shrink:0;padding-top:2px}
+.sched-title{font-size:11px;font-weight:700;color:var(--white);width:150px;flex-shrink:0;padding-top:2px}
+.sched-desc{font-size:11px;color:var(--grey-light);flex:1;line-height:1.5}
+
+/* ── SHOPPING ── */
+.shop-source{margin-bottom:20px}
+.shop-source-header{background:rgba(201,168,76,0.08);border:1px solid var(--gold-dim);padding:10px 14px;border-radius:4px 4px 0 0;display:flex;justify-content:space-between;align-items:center}
+.shop-source-name{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--gold)}
+.shop-source-url{font-size:10px;color:var(--teal)}
+.shop-item{padding:8px 14px;border:1px solid rgba(201,168,76,0.08);border-top:none;display:flex;justify-content:space-between;align-items:center;background:var(--bg3)}
+.shop-item-name{font-size:11px;color:var(--grey-light)}
+.shop-item-note{font-size:10px;color:var(--grey)}
+
+/* ── FACILITIES ── */
+.fac-card{background:var(--bg3);border:1px solid rgba(201,168,76,0.2);border-radius:4px;overflow:hidden;margin-bottom:12px}
+.fac-header{background:rgba(201,168,76,0.06);border-bottom:1px solid rgba(201,168,76,0.15);padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.fac-name{font-size:13px;font-weight:700;color:var(--white);letter-spacing:1px}
+.fac-type{font-size:9px;letter-spacing:2px;color:var(--gold)}
+.fac-body{padding:12px 16px}
+.fac-detail{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:8px}
+.fac-detail-item{font-size:11px;color:var(--grey-light)}
+.fac-detail-item strong{color:var(--gold);margin-right:4px}
+.fac-actions{display:flex;gap:8px;margin-top:10px}
+.fac-btn{background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:5px 12px;font-family:var(--font-ui);font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:2px;text-decoration:none;display:inline-block}
+.fac-btn:hover{background:rgba(201,168,76,0.1)}
+.fac-intl{border-color:rgba(230,126,34,0.4)}
+.fac-intl .fac-header{background:rgba(230,126,34,0.06);border-bottom-color:rgba(230,126,34,0.2)}
+.fac-intl .fac-type{color:var(--amber)}
+.fac-intl .fac-btn{border-color:rgba(230,126,34,0.3);color:var(--amber)}
+.fac-services{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.fac-service{font-size:10px;color:var(--grey-light);padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between}
+.fac-service-price{color:var(--gold);font-family:var(--font-mono)}
+
+/* ── VAPING TRACKER ── */
+.vape-hero{text-align:center;padding:40px;background:linear-gradient(135deg,rgba(26,140,122,0.1),rgba(26,140,122,0.03));border:1px solid var(--teal);border-radius:4px;margin-bottom:20px}
+.vape-days{font-family:var(--font-mono);font-size:64px;color:var(--teal);font-weight:700;line-height:1}
+.vape-label{font-size:12px;letter-spacing:3px;color:var(--grey);margin-top:8px}
+.vape-since{font-size:11px;color:var(--grey);margin-top:8px;font-family:var(--font-mono)}
+.biomarker-impact{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.impact-card{background:var(--bg3);border:1px solid rgba(39,174,96,0.2);border-radius:4px;padding:12px;text-align:center}
+.impact-marker{font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px}
+.impact-val{font-family:var(--font-mono);font-size:13px;color:var(--red);margin-bottom:4px}
+.impact-desc{font-size:9px;color:var(--grey);line-height:1.4}
+
+/* ── NATURAL MEDICINE ── */
+.comparison-row{display:grid;grid-template-columns:1fr 80px 1fr 80px;gap:8px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center}
+.comparison-row:hover{background:var(--bg3)}
+.comp-clinical{font-size:11px;color:var(--grey-light)}
+.comp-price-bad{font-family:var(--font-mono);font-size:10px;color:var(--red);text-align:right}
+.comp-natural{font-size:11px;color:#5EF09E}
+.comp-price-good{font-family:var(--font-mono);font-size:10px;color:var(--green);text-align:right}
+.comparison-header{display:grid;grid-template-columns:1fr 80px 1fr 80px;gap:8px;padding:6px 14px;background:var(--bg4)}
+.inducer-row{display:flex;gap:14px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.inducer-mol{font-size:11px;font-weight:700;color:var(--gold);width:120px;flex-shrink:0}
+.inducer-methods{font-size:11px;color:var(--grey-light);flex:1;line-height:1.6}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.grid2,.grid3,.grid4{grid-template-columns:1fr}
+.body-comp-grid{grid-template-columns:repeat(2,1fr)}
+.comp-inputs{grid-template-columns:repeat(2,1fr)}
+.food-list{columns:1}
+.bm-input-row,.bm-header-row{grid-template-columns:1fr 1fr 60px}
+.timeline-row{flex-direction:column;gap:4px}
+.pd-grid{grid-template-columns:1fr}
+.comparison-row,.comparison-header{grid-template-columns:1fr 1fr}
+.biomarker-impact{grid-template-columns:1fr}
+.fast-calendar{grid-template-columns:repeat(3,1fr)}
+.kpi-row{grid-template-columns:repeat(2,1fr)}
+.nav-brand{font-size:10px;padding:0 10px}
+.nav-tab{padding:0 10px;font-size:9px}
+.panel{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-brand">SEKHEM</div>
+  <div class="nav-tabs" id="navTabs">
+    <div class="nav-tab active" data-panel="mission">MISSION CONTROL</div>
+    <div class="nav-tab" data-panel="biomarkers">BIOMARKERS</div>
+    <div class="nav-tab" data-panel="diet">DIET</div>
+    <div class="nav-tab" data-panel="fasting">FASTING</div>
+    <div class="nav-tab" data-panel="hbot">HBOT</div>
+    <div class="nav-tab" data-panel="supplements">SUPPLEMENTS</div>
+    <div class="nav-tab" data-panel="peptides">PEPTIDES</div>
+    <div class="nav-tab" data-panel="timeline">TIMELINE</div>
+    <div class="nav-tab" data-panel="schedule">DAILY SCHEDULE</div>
+    <div class="nav-tab" data-panel="natural">NATURAL MEDICINE</div>
+    <div class="nav-tab" data-panel="progress">PROGRESS TRACKER</div>
+    <div class="nav-tab" data-panel="bodycomp">BODY COMPOSITION</div>
+    <div class="nav-tab" data-panel="treatlog">TREATMENT LOG</div>
+    <div class="nav-tab" data-panel="shopping">SHOPPING LIST</div>
+    <div class="nav-tab" data-panel="facilities">FACILITIES</div>
+    <div class="nav-tab" data-panel="vaping">VAPING TRACKER</div>
+  </div>
+</nav>
+
+<div id="panels">
+
+<!-- ══════════════════════════════════════════════════════════
+     01 · MISSION CONTROL
+══════════════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-mission">
+  <div class="panel-title">MISSION CONTROL</div>
+  <div class="panel-sub" id="protocolDay">PROTOCOL START: APRIL 22, 2026 · DAY 1</div>
+  <div class="gold-line"></div>
+
+  <div class="root-banner">
+    <strong>ROOT CAUSE IDENTIFIED</strong>
+    <p>Insulin resistance is the master driver of every red flag in your April 2026 results. Fix the root — insulin — and every downstream marker resolves: cholesterol, testosterone, TSH, ALT, triglycerides, Vitamin D conversion. One root. One protocol. One year.</p>
+  </div>
+
+  <div class="next-action" id="nextActionBanner">
+    <div class="next-action-label">NEXT ACTION · RIGHT NOW</div>
+    <div class="next-action-text" id="nextActionText">Start BPC-157 Oral 250mcg — available on egyptvitamins.com and amazon.eg now</div>
+  </div>
+
+  <div class="current-peptide-banner">
+    <div>
+      <div style="font-size:9px;letter-spacing:2px;color:var(--gold);margin-bottom:4px">CURRENT PEPTIDE</div>
+      <div style="font-size:14px;font-weight:700" id="currentPeptide">BPC-157 Oral · Week 1</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:9px;letter-spacing:2px;color:var(--grey);margin-bottom:4px">NEXT PEPTIDE</div>
+      <div style="font-size:12px;color:var(--teal)" id="nextPeptide">KPV Oral · Week 4</div>
+    </div>
+  </div>
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <div class="section-head">DAILY CHECKLIST — <span id="checkDate" style="color:var(--grey)"></span></div>
+  <div class="checklist-grid" id="checklist"></div>
+  <div style="margin-top:8px;font-size:10px;color:var(--grey)">Resets at midnight · Click to mark complete · Streaks tracked automatically</div>
+
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="Mission notes, observations, adjustments..." id="missionNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     02 · BIOMARKERS
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-biomarkers">
+  <div class="panel-title">BIOMARKER BASELINE</div>
+  <div class="panel-sub">LABMED EGYPT · APRIL 2026 · ALL RESULTS WITH PROGRESS TRACKING</div>
+  <div class="gold-line"></div>
+
+  <div class="section-head">CRITICAL FLAGS <span class="tag tag-red pulse">11 MARKERS</span></div>
+  <div id="criticalBM"></div>
+
+  <div class="section-head">SUBOPTIMAL <span class="tag tag-amber">MONITOR</span></div>
+  <div id="suboptBM"></div>
+
+  <div class="section-head">CLEAN MARKERS <span class="tag tag-green">CONFIRMED STRONG</span></div>
+  <div id="cleanBM"></div>
+
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="Biomarker observations..." id="bioNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     03 · DIET
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-diet">
+  <div class="panel-title">DIET PROTOCOL</div>
+  <div class="panel-sub">INSULIN NORMALIZATION · MODIFIED MEDITERRANEAN · SINAI-OPTIMIZED</div>
+  <div class="gold-line"></div>
+
+  <div class="grid3" style="margin-bottom:20px">
+    <div class="card"><div class="card-title">PHASE 1 · DAYS 1–30</div><div class="stat-big">50–75g</div><div class="text-xs text-grey" style="margin-top:4px">carbs per day</div></div>
+    <div class="card"><div class="card-title">PHASE 2 · DAYS 30–90</div><div class="stat-big">75–100g</div><div class="text-xs text-grey" style="margin-top:4px">carbs per day</div></div>
+    <div class="card"><div class="card-title">PHASE 3 · POST 90 DAYS</div><div class="stat-big">100–130g</div><div class="text-xs text-grey" style="margin-top:4px">carbs per day</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:6px;background:rgba(39,174,96,0.05);border-color:rgba(39,174,96,0.3)">
+    <div class="card-title text-green">EAT FREELY · EVERY DAY</div>
+    <div class="food-list" id="eatList"></div>
+  </div>
+
+  <div class="card" style="margin-top:12px;background:rgba(192,57,43,0.05);border-color:rgba(192,57,43,0.3)">
+    <div class="card-title text-red">NEVER EAT · ZERO EXCEPTIONS</div>
+    <div class="food-list" id="avoidList"></div>
+  </div>
+
+  <div class="section-head" style="margin-top:20px">DAILY MEAL STRUCTURE</div>
+  <div id="mealStructure"></div>
+
+  <div class="divider"></div>
+  <div style="background:var(--bg3);border-left:3px solid var(--gold);padding:12px 16px;border-radius:0 4px 4px 0;font-size:11px;color:var(--grey-light);line-height:1.7">
+    <strong style="color:var(--gold)">THE GOLDEN RULE:</strong> Protein and fat at every meal BEFORE any carbohydrate. Eating window 12pm–8pm daily. Walk 30–45 minutes after your largest meal. Drink minimum 3 litres filtered water daily.
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="Diet observations, meal ideas, adjustments..." id="dietNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     04 · FASTING
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-fasting">
+  <div class="panel-title">FASTING PROTOCOL</div>
+  <div class="panel-sub">DAILY 16:8 · 6 EXTENDED FASTING EVENTS PER YEAR</div>
+  <div class="gold-line"></div>
+
+  <div class="grid2" style="margin-bottom:20px">
+    <div class="countdown-box">
+      <div class="countdown-label">DAYS UNTIL NEXT 72-HOUR FAST</div>
+      <div class="countdown-num" id="nextFastCountdown">—</div>
+      <div class="countdown-label" id="nextFastDate" style="margin-top:8px">CALCULATING...</div>
+    </div>
+    <div class="card">
+      <div class="card-title">DAILY 16:8 WINDOW</div>
+      <div style="margin-bottom:8px"><span class="tag tag-green">EAT 12:00PM – 8:00PM</span></div>
+      <div style="margin-bottom:8px"><span class="tag tag-gold">FAST 8:00PM – 12:00PM</span></div>
+      <div style="font-size:10px;color:var(--grey);line-height:1.6">Break fast always with protein and fat. Water, herbal tea, black coffee permitted during fast window.</div>
+    </div>
+  </div>
+
+  <div class="section-head">ANNUAL FASTING CALENDAR</div>
+  <div class="fast-calendar" id="fastCalendar"></div>
+
+  <div class="section-head">STEM CELL COMPARISON · FASTING vs INJECTION</div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px">72-HOUR FAST · YOUR PROTOCOL</div>
+        <div style="font-size:11px;color:var(--grey-light);line-height:1.7">
+          <div>+300% stem cell production increase</div>
+          <div>Cost: <strong style="color:var(--green)">$0</strong></div>
+          <div>Safety: Extremely safe</div>
+          <div>Coverage: Systemic — whole body</div>
+          <div>Engraftment: 100% — your own cells</div>
+          <div>Frequency: Quarterly — indefinitely</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px">CLINICAL INJECTION</div>
+        <div style="font-size:11px;color:var(--grey-light);line-height:1.7">
+          <div>50–200 million exogenous cells</div>
+          <div>Cost: <strong style="color:var(--red)">$10,000–$25,000</strong></div>
+          <div>Safety: Low but non-zero risk</div>
+          <div>Coverage: Targeted site only</div>
+          <div>Engraftment: 20–80% in clean environment</div>
+          <div>Frequency: 1–2 courses per year max</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px;background:var(--amber-dim);border:1px solid var(--amber);border-radius:2px;padding:8px 12px;font-size:10px;color:#FFB366">
+      Joint-specific recommendation: One autologous stem cell injection into each knee joint and right shoulder at Week 40 — after metabolic cleanup. Cost in Cairo: $1,500–$4,000 total.
+    </div>
+  </div>
+
+  <div class="section-head">72-HOUR FAST PROTOCOL</div>
+  <div id="fastProtocol"></div>
+
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="Fasting observations, energy levels, reactions..." id="fastNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     05 · HBOT
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-hbot">
+  <div class="panel-title">HBOT PROTOCOL</div>
+  <div class="panel-sub">120 SESSIONS · 3 CAIRO BLOCKS · 400 EGP PER SESSION · $985 USD TOTAL</div>
+  <div class="gold-line"></div>
+
+  <div class="grid4" style="margin-bottom:20px">
+    <div class="kpi"><div class="kpi-val" id="hbotDone">0</div><div class="kpi-label">SESSIONS DONE</div></div>
+    <div class="kpi"><div class="kpi-val">120</div><div class="kpi-label">TOTAL TARGET</div></div>
+    <div class="kpi"><div class="kpi-val" id="hbotCost">0</div><div class="kpi-label">EGP SPENT</div></div>
+    <div class="kpi"><div class="kpi-val" id="hbotPct">0%</div><div class="kpi-label">COMPLETE</div></div>
+  </div>
+
+  <div class="progress-bar" style="height:10px;margin-bottom:20px">
+    <div class="progress-fill" id="hbotProgressBar" style="background:var(--gold);width:0%"></div>
+  </div>
+
+  <div class="section-head">SESSION TRACKER · CLICK TO LOG/UNLOG</div>
+  <div style="font-size:10px;color:var(--grey);margin-bottom:10px">Block 1: Sessions 1–40 (Cairo Trip 1) · Block 2: Sessions 41–80 (Cairo Trip 2) · Block 3: Sessions 81–120 (Cairo Trip 3)</div>
+  <div class="hbot-sessions" id="hbotSessions"></div>
+
+  <div class="section-head">CAIRO TRIP BLOCKS</div>
+  <div id="cairoBlocks"></div>
+
+  <div class="section-head">TOP BENEFITS MATCHED TO YOUR RESULTS</div>
+  <div id="hbotBenefits"></div>
+
+  <div class="section-head">PRE-SESSION RULES · EVERY SESSION</div>
+  <div class="card">
+    <div id="hbotRules"></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="HBOT observations, session notes, side effects..." id="hbotNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     06 · SUPPLEMENTS
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-supplements">
+  <div class="panel-title">SUPPLEMENT PROTOCOL</div>
+  <div class="panel-sub">4-WEEK SEQUENCED INTRODUCTION · ONE ADDITION AT A TIME</div>
+  <div class="gold-line"></div>
+  <div id="suppContent"></div>
+
+  <div class="section-head" style="margin-top:20px">DAILY TEA PROTOCOL</div>
+  <div id="teaProtocol"></div>
+
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="Supplement reactions, adjustments, observations..." id="suppNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     07 · PEPTIDES
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-peptides">
+  <div class="panel-title">PEPTIDE PROTOCOL</div>
+  <div class="panel-sub">20 PEPTIDES · 52-WEEK SEQUENCE · ONE AT A TIME</div>
+  <div class="gold-line"></div>
+
+  <div style="background:rgba(192,57,43,0.1);border:1px solid var(--red);border-radius:4px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--white)">
+    <strong style="color:var(--gold)">THE IRON RULE:</strong> Introduce ONE new peptide every 4–6 weeks minimum. Never introduce two at once. This rule preserves your ability to isolate cause and effect. It is non-negotiable.
+  </div>
+
+  <div class="section-head">VISUAL TIMELINE · CLICK ANY PEPTIDE FOR FULL DETAILS</div>
+  <div class="peptide-timeline" id="peptideTimeline"></div>
+
+  <div class="peptide-detail" id="peptideDetail">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--white)" id="pd-name"></div>
+        <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-top:2px" id="pd-week"></div>
+      </div>
+      <div style="text-align:right">
+        <span class="tag tag-gold" id="pd-cat"></span>
+        <div style="font-size:10px;color:var(--grey);margin-top:4px" id="pd-source"></div>
+      </div>
+    </div>
+    <div class="pd-grid">
+      <div><div class="pd-label">DOSE & TIMING</div><div class="pd-value" id="pd-dose"></div></div>
+      <div><div class="pd-label">BENEFIT</div><div class="pd-value text-green" id="pd-benefit"></div></div>
+      <div><div class="pd-label">GATE CONDITIONS</div><div class="pd-value text-amber" id="pd-gate"></div></div>
+      <div><div class="pd-label">STORAGE</div><div class="pd-value" id="pd-storage"></div></div>
+    </div>
+  </div>
+
+  <div class="section-head">ALL PEPTIDES · COMPLETE REFERENCE</div>
+  <div id="peptideList"></div>
+
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="Peptide reactions, observations, timing notes..." id="peptideNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     08 · TIMELINE
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-timeline">
+  <div class="panel-title">MASTER TIMELINE</div>
+  <div class="panel-sub">52-WEEK PROTOCOL · START DATE APRIL 22, 2026</div>
+  <div class="gold-line"></div>
+  <div style="font-size:11px;color:var(--grey);margin-bottom:16px">Current week highlighted in gold. All dates calculated from April 22, 2026 start.</div>
+  <div id="timelineContent"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     09 · DAILY SCHEDULE
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-schedule">
+  <div class="panel-title">DAILY SCHEDULE</div>
+  <div class="panel-sub">SINAI PROTOCOL · HOUR BY HOUR · EVERY DAY</div>
+  <div class="gold-line"></div>
+  <div style="background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:16px" id="scheduleContent"></div>
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="Schedule adjustments, observations..." id="schedNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     10 · NATURAL MEDICINE
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-natural">
+  <div class="panel-title">NATURAL MEDICINE</div>
+  <div class="panel-sub">FREE AND LOW COST · SINAI IS YOUR CLINIC</div>
+  <div class="gold-line"></div>
+
+  <div style="background:var(--bg3);border-left:3px solid var(--gold);padding:12px 16px;border-radius:0 4px 4px 0;font-size:11px;color:var(--grey-light);line-height:1.7;margin-bottom:20px">
+    Every expensive clinical intervention has a natural equivalent because these mechanisms evolved in the human body over millions of years before any clinic existed. You live in Sinai. Use it deliberately and consistently.
+  </div>
+
+  <div class="section-head">CLINICAL vs NATURAL — COST COMPARISON</div>
+  <div style="background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:20px">
+    <div class="comparison-header">
+      <div class="text-xs text-gold">CLINICAL TREATMENT</div>
+      <div class="text-xs text-gold" style="text-align:right">COST</div>
+      <div class="text-xs text-green">NATURAL EQUIVALENT</div>
+      <div class="text-xs text-green" style="text-align:right">COST</div>
+    </div>
+    <div id="comparisonTable"></div>
+  </div>
+
+  <div class="section-head">NATURAL MOLECULE INDUCERS — BY TARGET</div>
+  <div style="background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:20px" id="inducerTable"></div>
+
+  <div class="section-head">SINAI ADVANTAGE — FREE DAILY MEDICINE</div>
+  <div class="grid3" id="sinaiGrid"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     11 · PROGRESS TRACKER
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-progress">
+  <div class="panel-title">PROGRESS TRACKER</div>
+  <div class="panel-sub">4 QUARTERLY BLOOD TEST PANELS · AUTO COLOR-CODED</div>
+  <div class="gold-line"></div>
+  <div style="font-size:11px;color:var(--grey);margin-bottom:16px">Enter your results — cells auto color-code red/amber/green against baseline and target. Data saves automatically.</div>
+  <div id="progressContent"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     12 · BODY COMPOSITION
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-bodycomp">
+  <div class="panel-title">BODY COMPOSITION</div>
+  <div class="panel-sub">QUARTERLY DEXA TRACKING · WEIGHT · FAT · MUSCLE · BONE</div>
+  <div class="gold-line"></div>
+
+  <div class="section-head">CURRENT BASELINE · APRIL 2026</div>
+  <div class="body-comp-grid">
+    <div class="bc-metric"><div class="bc-val">98.45</div><div class="bc-baseline">Baseline</div><div class="bc-target">Target: &lt;74kg</div><div class="bc-label">Weight (kg)</div></div>
+    <div class="bc-metric"><div class="bc-val">~30%</div><div class="bc-baseline">Estimated baseline</div><div class="bc-target">Target: &lt;15%</div><div class="bc-label">Body Fat %</div></div>
+    <div class="bc-metric"><div class="bc-val">~69kg</div><div class="bc-baseline">Estimated baseline</div><div class="bc-target">Target: &gt;75kg</div><div class="bc-label">Lean Mass (kg)</div></div>
+    <div class="bc-metric"><div class="bc-val">TBD</div><div class="bc-baseline">DEXA needed</div><div class="bc-target">Optimize</div><div class="bc-label">Bone Density</div></div>
+    <div class="bc-metric"><div class="bc-val">High</div><div class="bc-baseline">Estimated</div><div class="bc-target">Reduce significantly</div><div class="bc-label">Visceral Fat</div></div>
+  </div>
+
+  <div style="background:var(--amber-dim);border:1px solid var(--amber);border-radius:4px;padding:10px 14px;font-size:10px;color:#FFB366;margin-bottom:20px">
+    Book DEXA at MRC New Cairo (19773 · misrradiologycenter.com) — $30 per scan. Do baseline scan on first Cairo trip then quarterly thereafter.
+  </div>
+
+  <div class="section-head">QUARTERLY BODY COMPOSITION ENTRIES</div>
+  <div id="bodyCompQuarters"></div>
+
+  <div class="divider"></div>
+  <div class="section-head">NOTES</div>
+  <textarea class="notes-area" placeholder="Body composition observations, measurements, notes..." id="bodyNotes"></textarea>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     13 · TREATMENT LOG
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-treatlog">
+  <div class="panel-title">TREATMENT LOG</div>
+  <div class="panel-sub">RUNNING LOG · ALL SESSIONS · HIJAMA · HBOT · FASTS · SOMATIC</div>
+  <div class="gold-line"></div>
+
+  <div class="log-add-form">
+    <div class="section-head" style="margin-top:0">ADD ENTRY</div>
+    <div class="log-form-grid">
+      <div><label>DATE</label><input type="date" id="logDate"></div>
+      <div><label>TREATMENT TYPE</label>
+        <select id="logType">
+          <option value="HBOT">HBOT Session</option>
+          <option value="HIJAMA">Hijama / Wet Cupping</option>
+          <option value="FAST">Extended Fast</option>
+          <option value="SOMATIC">Somatic Therapy</option>
+          <option value="OZONE">Ozone Therapy</option>
+          <option value="IV">IV Therapy</option>
+          <option value="PEPTIDE">Peptide Administration</option>
+          <option value="CHIRO">Chiropractic</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+      <div><label>SOMATIC FINDINGS (optional)</label><input type="text" id="logSomatic" placeholder="Body findings, reactions..."></div>
+    </div>
+    <div style="margin-bottom:10px"><label>NOTES</label><input type="text" id="logNote" placeholder="Session notes, reactions, observations..."></div>
+    <button class="btn btn-primary" onclick="addLogEntry()">ADD TO LOG</button>
+  </div>
+
+  <div class="section-head">LOG ENTRIES</div>
+  <div id="logEntries">
+    <div class="text-grey text-sm" style="padding:16px">No entries yet. Add your first treatment above.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     14 · SHOPPING LIST
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-shopping">
+  <div class="panel-title">SHOPPING LIST</div>
+  <div class="panel-sub">WHAT TO ORDER · BY SOURCE · CLICK LINKS TO VISIT</div>
+  <div class="gold-line"></div>
+  <div id="shoppingContent"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     15 · FACILITIES
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-facilities">
+  <div class="panel-title">FACILITIES & CONTACTS</div>
+  <div class="panel-sub">EGYPT-BASED · CLICK TO CALL OR VISIT · INTERNATIONAL FLAGGED</div>
+  <div class="gold-line"></div>
+  <div id="facilitiesContent"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     16 · VAPING TRACKER
+══════════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-vaping">
+  <div class="panel-title">VAPING TRACKER</div>
+  <div class="panel-sub">STOP NOW · 3 BIOMARKERS DIRECTLY ELEVATED BY NICOTINE</div>
+  <div class="gold-line"></div>
+
+  <div id="vapeSetup" style="display:none;margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">SET YOUR QUIT DATE</div>
+      <div style="display:flex;gap:10px;align-items:flex-end">
+        <div style="flex:1"><label>QUIT DATE</label><input type="date" id="quitDateInput"></div>
+        <button class="btn btn-primary" onclick="setQuitDate()">SET DATE</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="vapeDisplay">
+    <div class="vape-hero">
+      <div class="vape-days" id="vapeDays">—</div>
+      <div class="vape-label">DAYS NICOTINE FREE</div>
+      <div class="vape-since" id="vapeSince">Set your quit date to begin tracking</div>
+      <div style="margin-top:16px">
+        <button class="btn" onclick="resetQuitDate()" style="font-size:9px">RESET DATE</button>
+      </div>
+    </div>
+
+    <div class="section-head">BIOMARKERS DIRECTLY IMPACTED BY VAPING</div>
+    <div class="biomarker-impact">
+      <div class="impact-card">
+        <div class="impact-marker">AMYLASE</div>
+        <div class="impact-val">109 U/L ↑</div>
+        <div class="impact-desc">Elevated salivary amylase confirmed from vaping. Must normalize below 95 before Retatrutide gate opens.</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-marker">ALT (SGPT)</div>
+        <div class="impact-val">57 U/L ↑</div>
+        <div class="impact-desc">Liver stress directly compounded by nicotine metabolism. Stopping vaping accelerates ALT normalization.</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-marker">CEA</div>
+        <div class="impact-val">4.10 ng/mL ↑</div>
+        <div class="impact-desc">Elevated above non-smoker reference of 3.0. CEA must trend to normal before GHK-Cu and Retatrutide gates open.</div>
+      </div>
+    </div>
+
+    <div class="section-head">WHAT STOPPING UNLOCKS</div>
+    <div class="card">
+      <div style="font-size:11px;color:var(--grey-light);line-height:1.9">
+        <div>→ <strong style="color:var(--gold)">Amylase normalization</strong> — opens Retatrutide gate (moved from Week 24 → potentially Week 20)</div>
+        <div>→ <strong style="color:var(--gold)">CEA trending down</strong> — opens GHK-Cu gate at Week 12</div>
+        <div>→ <strong style="color:var(--gold)">HBOT effectiveness increases</strong> — nicotine reduces oxygen utilization in the chamber</div>
+        <div>→ <strong style="color:var(--gold)">BPC-157 works fully</strong> — nicotine directly counteracts BPC-157 gut and liver healing</div>
+        <div>→ <strong style="color:var(--gold)">Fasting more effective</strong> — nicotine disrupts autophagy signaling</div>
+        <div>→ <strong style="color:var(--gold)">Testosterone recovery accelerates</strong> — nicotine suppresses LH receptor sensitivity</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end #panels -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const START_DATE = new Date('2026-04-22');
+
+const BIOMARKERS_CRITICAL = [
+  {name:'Fasting Insulin',result:'31.5 uIU/mL',ref:'2.6–24.9',target:'<10 uIU/mL',base:31.5,tgt:10,unit:'uIU/mL',note:'Master root cause. Fix this and everything else follows.'},
+  {name:'Total Cholesterol',result:'334 mg/dL',ref:'<200',target:'<200 mg/dL',base:334,tgt:200,unit:'mg/dL',note:''},
+  {name:'LDL Cholesterol',result:'234 mg/dL',ref:'<100 optimal',target:'<100 mg/dL',base:234,tgt:100,unit:'mg/dL',note:''},
+  {name:'Triglycerides',result:'259 mg/dL',ref:'<150',target:'<150 mg/dL',base:259,tgt:150,unit:'mg/dL',note:'Omega-3 + berberine + fasting directly targets this.'},
+  {name:'ALT (SGPT)',result:'57 U/L',ref:'0–41',target:'<35 U/L',base:57,tgt:35,unit:'U/L',note:'Liver under fat processing overload. Stop vaping.'},
+  {name:'Amylase',result:'109 U/L',ref:'0–95',target:'<95 U/L',base:109,tgt:95,unit:'U/L',note:'Salivary source — vaping. GATE for Retatrutide.'},
+  {name:'Phosphorus',result:'4.8 mg/dL',ref:'2.5–4.5',target:'2.5–4.5 mg/dL',base:4.8,tgt:4.5,unit:'mg/dL',note:''},
+  {name:'Testosterone Total',result:'227 ng/dL',ref:'250–1100',target:'>500 ng/dL',base:227,tgt:500,unit:'ng/dL',note:'Secondary suppression from insulin resistance and aromatization. Will recover naturally.',higher:true},
+  {name:'Testosterone Free',result:'30.5 pg/mL',ref:'32–168',target:'>60 pg/mL',base:30.5,tgt:60,unit:'pg/mL',note:'',higher:true},
+  {name:'TSH',result:'6.00 uIU/mL',ref:'0.30–6.00',target:'1.0–2.5 uIU/mL',base:6.0,tgt:2.5,unit:'uIU/mL',note:'Thyroid working at maximum. Reverse T3 + TPO urgent.'},
+  {name:'CEA',result:'4.10 ng/mL',ref:'<3.0 non-smoker',target:'<3.0 ng/mL',base:4.1,tgt:3.0,unit:'ng/mL',note:'Vaping signal. GATE for GHK-Cu. Likely false positive — monitor.'},
+];
+
+const BIOMARKERS_SUBOPT = [
+  {name:'Vitamin D3',result:'25.0 ng/mL',ref:'30–100',target:'50–80 ng/mL',base:25,tgt:60,unit:'ng/mL',note:'Liver conversion problem. Fix liver first.',higher:true},
+  {name:'HDL Cholesterol',result:'48 mg/dL',ref:'≥60',target:'>60 mg/dL',base:48,tgt:65,unit:'mg/dL',note:'',higher:true},
+  {name:'AST (SGOT)',result:'40 U/L',ref:'0–40',target:'<30 U/L',base:40,tgt:30,unit:'U/L',note:'At upper limit.'},
+  {name:'Free T3',result:'2.6 pg/mL',ref:'1.8–4.6',target:'>3.5 pg/mL',base:2.6,tgt:3.8,unit:'pg/mL',note:'Low-normal. Selenium + thyroid support.',higher:true},
+  {name:'Magnesium',result:'1.9 mg/dL',ref:'1.6–2.6',target:'2.0–2.4 mg/dL',base:1.9,tgt:2.2,unit:'mg/dL',note:'Low-normal. Magnesium glycinate 300mg nightly.',higher:true},
+  {name:'Zinc',result:'115 ug/dL',ref:'72.6–127',target:'120–127 ug/dL',base:115,tgt:123,unit:'ug/dL',note:'Low-normal. 25–30mg daily with food.',higher:true},
+  {name:'Uric Acid',result:'6.4 mg/dL',ref:'3.5–7.2',target:'<5.5 mg/dL',base:6.4,tgt:5.5,unit:'mg/dL',note:'Upper range. Reduce fructose and refined carbs.'},
+];
+
+const BIOMARKERS_CLEAN = ['CRP: Negative · No active inflammation','eGFR: 112.7 · Kidneys excellent','Calprotectin: 10.0 mg/kg · Gut lining clean','D-Dimer: 0.14 · No clotting issues','INR: 1.0 · Perfect clotting','CBC: Normal blood picture','HbA1c: 5.2% · Not yet diabetic','PSA: 0.93 · Prostate clear','CA 19-9: 25.0 · Normal','Anti-tTG IgA + IgG: Negative · No celiac','Occult Blood: Negative · No GI bleeding','Lipase: 45 · Pancreas confirmed healthy'];
+
+const PEPTIDES = [
+  {num:1,name:'BPC-157 Oral',week:'Week 1',cat:'Gut + Liver + Tissue',dose:'250mcg daily → 500mcg from week 2. Empty stomach, morning.',benefit:'Heals gut lining, reduces ALT, repairs rotator cuff and knee tissue, nervous system support.',gate:'CEA monitoring — stop if CEA rises. Calprotectin clean. CRP negative. Safe to start NOW.',source:'egyptvitamins.com / amazon.eg',storage:'Refrigerate after opening. Use within 30 days.'},
+  {num:2,name:'KPV Oral',week:'Week 4',cat:'Gut + Immune',dose:'500mcg–1mg daily oral. Take with BPC-157 on empty stomach.',benefit:'Gut inflammation reduction, immune modulation, celiac and IBD prevention.',gate:'No significant contraindications at this dose.',source:'egyptvitamins.com',storage:'Refrigerate. Stable at room temp for short periods.'},
+  {num:3,name:'BPC-157 Injectable',week:'Week 6',cat:'Structural Repair',dose:'250–500mcg subcutaneous daily. Abdomen or near injury site.',benefit:'Reaches rotator cuff, knee joint capsules, fascial structures for accelerated repair.',gate:'MRC Whole Body MRI must be clear before starting.',source:'egyptvitamins.com',storage:'Refrigerate reconstituted peptide. Use within 30 days.'},
+  {num:4,name:'TB-500',week:'Week 8',cat:'Muscle + Tendon + Fascia',dose:'2–2.5mg 2x/week loading × 4 weeks → 2mg once/week maintenance.',benefit:'Muscle repair, flexibility, inflammation reduction, tendon and ligament regeneration.',gate:'Pair with BPC-157 injectable — strongest synergistic healing combination available.',source:'egyptvitamins.com',storage:'Refrigerate. Lyophilized — stable dry.'},
+  {num:5,name:'GHK-Cu',week:'Week 12',cat:'Anti-aging + Liver + Collagen',dose:'1–2mg daily subcutaneous + topical GHK-Cu serum on face and scalp.',benefit:'Activates 4,000+ repair genes, liver cell regeneration, collagen synthesis, anti-aging.',gate:'ALT must be trending down on 90-day retest. CEA trending to normal.',source:'egyptvitamins.com / uae.pharmalabglobal.com',storage:'Refrigerate. Light sensitive — store in dark.'},
+  {num:6,name:'Epithalon',week:'Week 14',cat:'Longevity + Telomeres',dose:'5–10mg per course, 10 days on then 3–6 months off. Before bed.',benefit:'Telomere lengthening, cellular longevity, immune regulation, biological age reduction.',gate:'One of the safest longevity peptides. No significant contraindications.',source:'egyptvitamins.com',storage:'Refrigerate. Stable lyophilized for 2 years.'},
+  {num:7,name:'Tesamorelin',week:'Week 18',cat:'Visceral Fat + GH',dose:'1–2mg daily subcutaneous. Before bed on fasting stomach.',benefit:'Specifically reduces visceral belly fat and liver fat. Improves IGF-1. GH support.',gate:'IGF-1 result from Al Mokhtabar required before starting.',source:'egyptvitamins.com / uae.pharmalabglobal.com',storage:'Refrigerate. Reconstitute with sterile water.'},
+  {num:8,name:'AOD-9604',week:'Week 20',cat:'Fat Metabolism',dose:'300–600mcg daily subcutaneous. Morning, fasted.',benefit:'Targets stubborn fat through lipolysis without affecting IGF-1 or blood sugar.',gate:'Safe for insulin resistance — no glucose metabolism impact.',source:'egyptvitamins.com',storage:'Refrigerate reconstituted. Use within 30 days.'},
+  {num:9,name:'MOTS-c',week:'Week 22',cat:'Mitochondrial Insulin',dose:'5–10mg weekly subcutaneous. Morning before movement.',benefit:'Activates AMPK — natural Metformin equivalent. Improves insulin at cellular level.',gate:'Powerful synergy with fasting protocol and HBOT.',source:'egyptvitamins.com',storage:'Freeze if storing >2 weeks. Refrigerate for short term.'},
+  {num:10,name:'Retatrutide',week:'Week 24',cat:'Master Metabolic ⚡',dose:'Start 2mg weekly → titrate 12–16 weeks to 8–12mg maintenance. Once weekly injection.',benefit:'GLP-1/GIP/Glucagon triple agonist. Most powerful metabolic peptide available. Addresses insulin resistance, visceral fat, triglycerides, LDL simultaneously.',gate:'GATE: Amylase below 95 · Imaging clear · Physician consult done · All prior peptides established · Stop vaping first.',source:'egyptvitamins.com (10mg, 12mg, 20mg vials available)',storage:'Refrigerate. Do not freeze. Multi-dose vial.'},
+  {num:11,name:'CJC-1295 + Ipamorelin',week:'Week 26',cat:'GH + Sleep + Recovery',dose:'CJC-1295 1mg + Ipamorelin 300mcg combined. Subcutaneous before bed.',benefit:'Natural pulsatile GH release. Supports testosterone, body composition, sleep quality, recovery.',gate:'Works with pituitary — not synthetic HGH. Very clean GH stimulation.',source:'egyptvitamins.com',storage:'Refrigerate each vial. Use within 30 days reconstituted.'},
+  {num:12,name:'DSIP',week:'Week 28',cat:'Deep Sleep',dose:'100–200mcg subcutaneous or intranasal. 30 minutes before sleep.',benefit:'Improves deep sleep architecture and circadian rhythm regulation.',gate:'Directly supports testosterone production which peaks during deep sleep.',source:'egyptvitamins.com',storage:'Refrigerate. Light sensitive.'},
+  {num:13,name:'Selank',week:'Week 30',cat:'Nervous System + Anxiety',dose:'250–500mcg daily intranasal. 2–3 drops per nostril. Morning.',benefit:'Reduces anxiety, supports calm focus, regulates nervous system without sedation or dependence.',gate:'Addresses dorsal vagal threat state identified in somatic assessment.',source:'egyptvitamins.com',storage:'Refrigerate intranasal solution. Use within 30 days.'},
+  {num:14,name:'Semax',week:'Week 32',cat:'Cognitive + BDNF',dose:'300–600mcg daily intranasal. Morning.',benefit:'Enhances BDNF — brain growth factor. Supports focus, memory, cognitive clarity.',gate:'Complements Selank — where Selank calms, Semax sharpens.',source:'egyptvitamins.com',storage:'Refrigerate. Light and heat sensitive.'},
+  {num:15,name:'PT-141',week:'Week 34',cat:'Libido + Sexual Function',dose:'1–2mg subcutaneous as needed — not daily.',benefit:'Activates melanocortin receptors — libido and sexual function via nervous system pathway.',gate:'GATE: Full skin exam and dermatology mole mapping must be completed first. Book dermatology at As-Salam.',source:'egyptvitamins.com',storage:'Refrigerate reconstituted. Use within 30 days.'},
+  {num:16,name:'Humanin',week:'Week 36',cat:'Mitochondrial Longevity',dose:'2–4mg daily or every other day subcutaneous.',benefit:'Reduces amyloid formation, protects against metabolic stress, extends healthy lifespan.',gate:'One of the most researched longevity peptides in aging science.',source:'egyptvitamins.com',storage:'Refrigerate. Stable lyophilized.'},
+  {num:17,name:'SS-31 (Elamipretide)',week:'Week 38',cat:'Mitochondrial Efficiency',dose:'1–3mg daily subcutaneous.',benefit:'Directly improves mitochondrial efficiency, reduces oxidative stress at cellular level.',gate:'Repairs root cellular damage from metabolic syndrome.',source:'egyptvitamins.com',storage:'Refrigerate. Very sensitive — handle carefully.'},
+  {num:18,name:'FOXO4-DRI',week:'Week 40',cat:'Senolytic · Cyclical',dose:'Cyclical — 3 days per month only. NOT daily.',benefit:'Selectively eliminates senescent cells accumulated with metabolic stress.',gate:'One of the most cutting-edge longevity interventions available. Do not use daily.',source:'egyptvitamins.com',storage:'Freeze for long-term. Refrigerate for short-term use.'},
+  {num:19,name:'VIP',week:'Week 44',cat:'Immune + Gut + Lung',dose:'25–50mcg daily intranasal or subcutaneous.',benefit:'Supports immune balance, gut health, lung function, nervous system regulation.',gate:'Sleep apnea lung support directly relevant.',source:'egyptvitamins.com',storage:'Refrigerate. Very stable in solution.'},
+  {num:20,name:'NAD+ / NMN',week:'Week 48',cat:'Master Cellular Energy',dose:'IV 500mg monthly at As-Salam, or NMN 500mg daily oral sublingual.',benefit:'Master cellular energy molecule. Activates sirtuins, DNA repair, mitochondrial function.',gate:'Peak impact after all mitochondrial peptides established.',source:'As-Salam International IV clinic / oral NMN oral supplements',storage:'N/A for IV. Keep oral NMN sealed, room temperature.'},
+];
+
+const CHECKLIST_ITEMS = [
+  {id:'sunlight',label:'Morning Sunlight 20min'},
+  {id:'grounding',label:'Barefoot Grounding'},
+  {id:'breathwork',label:'Breathwork 10min'},
+  {id:'cold',label:'Cold Red Sea / Shower'},
+  {id:'acv',label:'ACV Before Meals'},
+  {id:'blackseed',label:'Black Seed Oil'},
+  {id:'walk',label:'Post-Meal Walk 30min'},
+  {id:'fast16',label:'16:8 Window Maintained'},
+  {id:'water',label:'3L Water'},
+  {id:'mousetape',label:'Mouth Tape Tonight'},
+  {id:'supplements',label:'Supplements Taken'},
+  {id:'redsea',label:'Red Sea Swim'},
+];
+
+const SUPPLEMENTS = [
+  {week:'WEEK 1 — START IMMEDIATELY',items:[
+    {name:'Vitamin D3',dose:'4,000 IU',timing:'With largest meal',why:'D3 at 25 ng/mL — urgent correction needed'},
+    {name:'Vitamin K2 (MK-7)',dose:'100 mcg',timing:'With Vitamin D3',why:'Directs calcium to bones not arteries'},
+    {name:'Magnesium Glycinate',dose:'300–400 mg',timing:'Before bed',why:'Low-normal at 1.9 mg/dL — sleep and muscle'},
+    {name:'Ashwagandha',dose:'1 tsp powder',timing:'Before bed in warm water',why:'Cortisol reduction, testosterone, thyroid support'},
+    {name:'Apple Cider Vinegar',dose:'1 tbsp in water',timing:'Before each meal',why:'Insulin sensitivity — primary target'},
+    {name:'Black Seed Oil',dose:'1 tsp',timing:'Morning',why:'Blood sugar, cholesterol, thyroid, anti-inflammatory'},
+  ]},
+  {week:'WEEK 2 — ADD TO STACK',items:[
+    {name:'Selenium',dose:'200 mcg',timing:'Morning with food',why:'T4 to T3 conversion — thyroid critical'},
+    {name:'Zinc',dose:'25–30 mg',timing:'With food',why:'Testosterone synthesis — low-normal at 115 ug/dL'},
+    {name:'Omega-3 Fish Oil',dose:'3–4g EPA/DHA',timing:'With meals',why:'Triglycerides at 259 — direct reduction target'},
+    {name:'Psyllium Husk',dose:'1 tbsp in water',timing:'Before bed',why:'LDL reduction, gut microbiome support'},
+    {name:'Milk Thistle',dose:'400–500 mg',timing:'Daily with food',why:'Liver protection — ALT at 57'},
+  ]},
+  {week:'WEEK 3 — ADD TO STACK',items:[
+    {name:'Berberine',dose:'500 mg',timing:'Before each meal',why:'Most powerful natural insulin sensitizer available'},
+    {name:'Moringa',dose:'1 tsp',timing:'Morning in water',why:'90+ nutrients — one of most dense plants on Earth'},
+    {name:'Ground Flaxseeds',dose:'1 tbsp',timing:'Morning in water',why:'Omega-3, LDL reduction, fiber'},
+    {name:'Alpha Lipoic Acid',dose:'300 mg',timing:'Daily with food',why:'Insulin sensitizer and antioxidant'},
+    {name:'Dandelion Tea',dose:'1 cup',timing:'Afternoon',why:'Liver detoxification, bile flow stimulation'},
+  ]},
+  {week:'WEEK 4 — COMPLETE STACK',items:[
+    {name:'Maca Powder',dose:'1 tsp',timing:'Morning',why:'Hormonal balance, testosterone support'},
+    {name:'Guggul',dose:'500 mg',timing:'Daily',why:'Ayurvedic thyroid stimulant — TSH at ceiling'},
+    {name:'Liposomal Glutathione',dose:'500 mg',timing:'Morning',why:'Liver master antioxidant — ALT and detox'},
+    {name:'Liposomal Vitamin C',dose:'2,000 mg',timing:'Morning',why:'Immune, collagen synthesis, liver support'},
+    {name:'Spirulina',dose:'1 tsp',timing:'In water morning',why:'Complete protein, detoxification, nutrients'},
+  ]},
+];
+
+const TEAS = [
+  {time:'Morning — empty stomach',tea:'Green tea or matcha',purpose:'Autophagy activation, EGCG antioxidant'},
+  {time:'Morning — with supplements',tea:'Ginkgo tea',purpose:'Circulation, thyroid and cognitive support'},
+  {time:'Afternoon',tea:'Dandelion tea',purpose:'Liver detoxification, bile stimulation'},
+  {time:'Afternoon',tea:'Rose hip or hibiscus',purpose:'Anti-inflammatory, Vitamin C'},
+  {time:'Evening',tea:'Chamomile',purpose:'Parasympathetic activation, cortisol reduction, sleep'},
+];
+
+const SCHEDULE = [
+  {time:'6:30 AM',title:'WAKE + SUNLIGHT',desc:'20–30 min direct morning sun on skin. No sunscreen. Vitamin D synthesis, serotonin production, circadian reset. No phone first 30 minutes.'},
+  {time:'6:45 AM',title:'MORNING RITUALS',desc:'Tongue scraping · Neti pot · Oil pulling 20 min (sesame or coconut) · Lemon water on empty stomach · Abhyanga self-massage with sesame oil before shower.'},
+  {time:'7:00 AM',title:'BREATHWORK',desc:'10 minutes diaphragmatic breathing or Nadi Shodhana alternate nostril breathing. The single most powerful free cortisol intervention available.'},
+  {time:'7:15 AM',title:'COLD IMMERSION',desc:'Cold shower contrast (hot 3 min → cold 1 min × 3 cycles) or Red Sea swim. Testosterone activation, stem cell mobilization, nervous system regulation.'},
+  {time:'7:30 AM',title:'MORNING SUPPLEMENTS',desc:'Vitamin D3 + K2 · Selenium · Zinc · Black seed oil · Spirulina in water · Green tea or matcha. Take all Week 1–4 stack as per current phase.'},
+  {time:'8:00 AM',title:'GROUNDING + MOVEMENT',desc:'Barefoot walk on Sinai sand 20–30 min. Bodyweight resistance, swimming, or yoga. No high-impact exercise on healing knees.'},
+  {time:'10:00 AM',title:'MID-MORNING',desc:'Ginkgo tea · Moringa in water · Check hydration — 500ml water by now minimum.'},
+  {time:'12:00 PM',title:'BREAK FAST',desc:'Apple cider vinegar 10 min before · Berberine 500mg · Protein first (fish or eggs) · Ghee or olive oil · Non-starchy vegetables · Half cup lentils max if desired.'},
+  {time:'12:30 PM',title:'POST-MEAL WALK',desc:'30–45 minute walk after largest meal. Non-negotiable. Directly reduces post-meal insulin spike by 20–30%. Barefoot on sand preferred.'},
+  {time:'1:00 PM',title:'PEPTIDE PROTOCOL',desc:'Current phase peptide injection or oral dose. Refrigerate peptides at all times. Rotate subcutaneous injection sites. Log in Treatment Log.'},
+  {time:'3:00 PM',title:'AFTERNOON PROTOCOL',desc:'Dandelion or rose hip tea · Small handful almonds or walnuts if hungry · Castor oil pack over liver 3x per week (45 min rest with warm pack on right abdomen).'},
+  {time:'5:00 PM',title:'HBOT SESSION',desc:'(Mon/Wed/Fri during Cairo trips) Arrive fasted 2–3 hours. Loose non-synthetic cotton clothing. No vaping before or after. No petroleum-based products on skin.'},
+  {time:'6:30 PM',title:'LAST MEAL',desc:'Grilled fish or eggs · Abundant non-starchy vegetables · Ghee · Garlic + turmeric + spices · Berberine 500mg before eating · Milk thistle with meal.'},
+  {time:'7:30 PM',title:'RED LIGHT THERAPY',desc:'10–20 minutes full body red and near-infrared light panel. Stimulates mitochondria, reduces liver inflammation, supports testosterone and sleep.'},
+  {time:'8:00 PM',title:'EATING WINDOW CLOSES',desc:'No food from this point. Fast begins. Switch to herbal teas only. This window is non-negotiable — enforce it every night.'},
+  {time:'8:30 PM',title:'EVENING PROTOCOL',desc:'Chamomile tea · Psyllium husk in water · Epsom salt foot soak 20 min · Journaling or voice memo for emotional processing.'},
+  {time:'9:00 PM',title:'PRE-SLEEP SUPPLEMENTS',desc:'Ashwagandha in warm water · Magnesium glycinate 300–400mg · Melatonin if needed (0.5mg only — lowest effective dose).'},
+  {time:'9:30 PM',title:'SLEEP PREPARATION',desc:'Complete darkness (blackout or eye mask) · Mouth tape for nasal breathing · Sleep on left side · Phone outside bedroom. No screens after 8pm.'},
+  {time:'10:00 PM',title:'SLEEP',desc:'Target 7–8 hours minimum. 80% of daily testosterone produced during deep sleep. Growth hormone, stem cells, BDNF all peak during deep sleep. Sleep is the protocol.'},
+];
+
+const TIMELINE_PHASES = [
+  {num:1,title:'FOUNDATION',weeks:'Weeks 1–12',bg:'#0D1F2D',border:'#1A3A4A',sub:'Heal gut and liver · Establish baseline · Begin structural repair',rows:[
+    {week:'Week 1',peptide:'BPC-157 Oral 250mcg',other:'Diet protocol begins · 16:8 fasting daily · Core supplements · Grounding + sunlight + Red Sea daily · Oil pulling + neti pot'},
+    {week:'Week 2',peptide:'',other:'HBOT begins 3x/week (Cairo Trip 1) · Mouth tape at night · Breathwork daily · Morning ritual established'},
+    {week:'Week 4',peptide:'Add KPV Oral',other:'Continue HBOT · First 72-hour fast · Ozone therapy begins · Castor oil pack 3x/week'},
+    {week:'Week 6',peptide:'BPC-157 Injectable',other:'Continue HBOT · Colonics course (3 sessions) · Deepen somatic therapy · Heavy metal mail-in kits ordered'},
+    {week:'Week 8',peptide:'Add TB-500',other:'Continue HBOT · Holotropic breathwork begins · Red light panel daily · Somatic therapy monthly'},
+    {week:'Week 12',peptide:'Add GHK-Cu + Topical',other:'HBOT Block 1 complete (40 sessions) · 90-day retest at LabMed + Al Mokhtabar · NAD+ IV first session · Review all results'},
+  ]},
+  {num:2,title:'METABOLIC RESET',weeks:'Weeks 12–26',bg:'#1A0D2E',border:'#2D1B4E',sub:'Direct insulin attack · Visceral fat reduction · Longevity activation',rows:[
+    {week:'Week 12',peptide:'GHK-Cu established',other:'Review 90-day results · Adjust protocol based on data · Second quarterly 72-hour fast · HBOT rest gap'},
+    {week:'Week 14',peptide:'Add Epithalon (10-day)',other:'Glutathione IV added to monthly · Red light therapy continues daily · Return to St Catherine'},
+    {week:'Week 18',peptide:'Add Tesamorelin 1mg',other:'5-day medically supervised water fast · HBOT Block 2 begins (Cairo Trip 2) · 6-month blood retest'},
+    {week:'Week 20',peptide:'Add AOD-9604 300mcg',other:'Heavy metal chelation if indicated · Continue all established protocols'},
+    {week:'Week 22',peptide:'Add MOTS-c 5mg weekly',other:'Third quarterly 72-hour fast · Continue HBOT Block 2'},
+    {week:'Week 24',peptide:'Add Retatrutide 2mg ⚡',other:'GATED — all conditions must be met · Physician consultation at As-Salam · Begin titration slowly'},
+  ]},
+  {num:3,title:'HORMONAL + NERVOUS SYSTEM',weeks:'Weeks 26–36',bg:'#2E0D0D',border:'#4E1B1B',sub:'Testosterone recovery · Sleep optimization · Nervous system reset',rows:[
+    {week:'Week 26',peptide:'CJC-1295 + Ipamorelin',other:'Continue Retatrutide titration · Fourth quarterly fast · 9-month panel'},
+    {week:'Week 28',peptide:'Add DSIP before sleep',other:'Sleep apnea retest at CairoSleep · Autologous stem cell joint injections if indicated'},
+    {week:'Week 30',peptide:'Add Selank intranasal',other:'Continue all established peptides · Monthly IV NAD+ + Glutathione'},
+    {week:'Week 32',peptide:'Add Semax intranasal',other:'Cognitive baseline assessment · MoCA test at As-Salam neurology'},
+    {week:'Week 34',peptide:'Add PT-141 (post-exam)',other:'Dermatology mole mapping must be complete · Full skin exam at As-Salam'},
+    {week:'Week 36',peptide:'Add Humanin',other:'HBOT Block 3 begins (Cairo Trip 3) · Plan TPE internationally for Year 2'},
+  ]},
+  {num:4,title:'LONGEVITY + CELLULAR',weeks:'Weeks 36–52',bg:'#0D2E0D',border:'#1B4E1B',sub:'Senolytic clearing · Mitochondrial optimization · Biological age audit',rows:[
+    {week:'Week 38',peptide:'Add SS-31 (Elamipretide)',other:'Continue HBOT Block 3 · Exosome therapy inquiry'},
+    {week:'Week 40',peptide:'Add FOXO4-DRI cyclical',other:'Autologous stem cell joint injections — knees and shoulder · Stem cell environment now clean'},
+    {week:'Week 44',peptide:'Add VIP intranasal',other:'HBOT Block 3 complete (120 sessions total) · Review all biomarkers'},
+    {week:'Week 48',peptide:'Add NAD+ IV monthly',other:'Annual 5–7 day water fast · Exosome therapy · Annual protocol review'},
+    {week:'Week 52',peptide:'Full biological age audit',other:'TruAge epigenetic test · DUTCH complete hormone panel · GI-MAP stool · Full blood retest · Year 2 protocol design'},
+  ]},
+];
+
+const FASTING_CALENDAR = [
+  {month:'Month 1',dur:'72 hours',type:'Q1 Quarterly Fast',date:'~May 22, 2026',color:'var(--teal)'},
+  {month:'Month 4',dur:'72 hours',type:'Q2 Quarterly Fast',date:'~Aug 22, 2026',color:'var(--teal)'},
+  {month:'Month 6',dur:'5 days',type:'Mid-Year Extended',date:'~Oct 22, 2026',color:'var(--gold)'},
+  {month:'Month 7',dur:'72 hours',type:'Q3 Quarterly Fast',date:'~Nov 22, 2026',color:'var(--teal)'},
+  {month:'Month 10',dur:'5–7 days',type:'Annual Extended',date:'~Feb 22, 2027',color:'var(--gold)'},
+  {month:'Month 12',dur:'72 hours',type:'Q4 Quarterly Fast',date:'~Apr 22, 2027',color:'var(--teal)'},
+];
+
+const FAST_PROTOCOL_STEPS = [
+  {hours:'Hour 0–12',desc:'Normal hunger, mild adjustment. Drink 500ml water with Himalayan salt and electrolytes. Continue normal activities.'},
+  {hours:'Hour 12–24',desc:'Autophagy begins. Some fatigue is normal. Continue water and herbal tea. Rest if needed. Light movement only.'},
+  {hours:'Hour 24–48',desc:'Fat burning dominant. Ketones rising. Mental clarity often improves. Stem cells beginning to activate. Hold the fast.'},
+  {hours:'Hour 48–72',desc:'Deep autophagy. Stem cell production at +300%. Immune cells regenerating. This is the peak. Hold the fast.'},
+  {hours:'Hour 72 — Break',desc:'Bone broth or lemon water first. Wait 30 minutes. Then small protein meal — fish or eggs. No carbohydrates for first meal.'},
+  {hours:'Days 4–5 Refeeding',desc:'Soft foods only. Fish, eggs, cooked vegetables, small lentil portions. Full protocol return by Day 5.'},
+];
+
+const HBOT_BENEFITS = [
+  {name:'Stem Cell Activation',val:'+800%',desc:'Circulating stem cells after 40 sessions. Critical for bilateral meniscectomy and rotator cuff repair.'},
+  {name:'Insulin Sensitivity',val:'Direct',desc:'Oxygen under pressure improves mitochondrial function and cellular glucose uptake. Targets fasting insulin at 31.5.'},
+  {name:'Liver Regeneration',val:'ALT ↓',desc:'Floods liver with oxygen — accelerates ALT normalization from current 57 U/L.'},
+  {name:'Visceral Fat',val:'Reduces',desc:'Activates fat metabolism pathways. Directly supports body composition toward 74–78kg target.'},
+  {name:'Mitochondrial Repair',val:'Cellular',desc:'Reverses cellular energy dysfunction at root level — the metabolic syndrome origin.'},
+  {name:'Collagen Synthesis',val:'Full body',desc:'Stimulates collagen throughout body — joints, skin, fascia. Critical for structural history.'},
+  {name:'Immune Reset',val:'Sessions 20–40',desc:'Old dysfunctional immune cells replaced with new ones — same mechanism as extended fasting.'},
+  {name:'Sleep Apnea',val:'Reduces',desc:'Reduces airway inflammation. Measurably better sleep quality reported during HBOT courses.'},
+  {name:'BDNF Increase',val:'Brain',desc:'Increases brain-derived neurotrophic factor. Supports somatic healing and nervous system regulation.'},
+  {name:'Biological Age',val:'Reduces',desc:'Combined effect measurably reduces biological age markers after full 40-session protocol.'},
+];
+
+const HBOT_RULES = [
+  'Fast 2–3 hours before — no food',
+  'No vaping before or after — nicotine directly counteracts HBOT oxygen utilization',
+  'No petroleum-based products on skin — fire risk in chamber',
+  'Wear loose comfortable non-synthetic cotton clothing',
+  'Drink 500ml filtered water 1 hour before',
+  'Never do two sessions on consecutive days — minimum one rest day between',
+  'Optimal schedule: Monday, Wednesday, Friday',
+  'Report any ear pressure or discomfort immediately to the technician',
+];
+
+const CAIRO_BLOCKS = [
+  {num:1,sessions:'1–40',dates:'Late April – Late May 2026',schedule:'Daily Mon–Fri (8 working days per trip, 5 sessions/week)',purpose:'Initial stem cell activation, liver healing, insulin reset, HBOT learning',batch:'Blood tests at Al Mokhtabar · MRC imaging Gold Package · As-Salam STI panel · IV therapy · Ozone therapy course · Specialist consultations'},
+  {num:2,sessions:'41–80',dates:'Late August – Late September 2026',schedule:'Daily Mon–Fri · 2–3 week stay',purpose:'Consolidate gains, mitochondrial repair, tissue regeneration phase',batch:'6-month retest at LabMed + Al Mokhtabar · DEXA body comp scan · Sleep apnea retest at CairoSleep · IV NAD+ + Glutathione'},
+  {num:3,sessions:'81–120',dates:'Late November – Late December 2026',schedule:'Daily Mon–Fri · 2–3 week stay',purpose:'Longevity phase, biological age reduction, cellular reset',batch:'Autologous stem cell injections (knees + shoulder) · Full annual retest · Year 2 physician consultations'},
+];
+
+const PROGRESS_BIOMARKERS = [
+  {name:'Fasting Insulin',unit:'uIU/mL',base:'31.5',q1:'<20',q2:'<10',q3:'<8',q4:'<6',lower:true},
+  {name:'Total Cholesterol',unit:'mg/dL',base:'334',q1:'<280',q2:'<240',q3:'<220',q4:'<200',lower:true},
+  {name:'LDL Cholesterol',unit:'mg/dL',base:'234',q1:'<180',q2:'<130',q3:'<110',q4:'<100',lower:true},
+  {name:'Triglycerides',unit:'mg/dL',base:'259',q1:'<200',q2:'<150',q3:'<130',q4:'<120',lower:true},
+  {name:'ALT (SGPT)',unit:'U/L',base:'57',q1:'<40',q2:'<35',q3:'<30',q4:'<25',lower:true},
+  {name:'TSH',unit:'uIU/mL',base:'6.00',q1:'<4.0',q2:'<3.0',q3:'<2.5',q4:'1.0–2.5',lower:true},
+  {name:'Testosterone Total',unit:'ng/dL',base:'227',q1:'>350',q2:'>500',q3:'>600',q4:'>700',lower:false},
+  {name:'Vitamin D3',unit:'ng/mL',base:'25.0',q1:'>40',q2:'>50',q3:'>60',q4:'>70',lower:false},
+  {name:'HDL Cholesterol',unit:'mg/dL',base:'48',q1:'>52',q2:'>55',q3:'>58',q4:'>60',lower:false},
+  {name:'CEA',unit:'ng/mL',base:'4.10',q1:'<3.5',q2:'<3.0',q3:'<2.5',q4:'<2.0',lower:true},
+  {name:'Amylase',unit:'U/L',base:'109',q1:'<95',q2:'<85',q3:'<80',q4:'<75',lower:true},
+  {name:'Body Weight',unit:'kg',base:'98.45',q1:'<90',q2:'<85',q3:'<80',q4:'<78',lower:true},
+  {name:'Reverse T3',unit:'ng/dL',base:'Not tested',q1:'<15',q2:'<15',q3:'<15',q4:'<12',lower:true},
+  {name:'SHBG',unit:'nmol/L',base:'Not tested',q1:'Ref range',q2:'Ref range',q3:'Optimal',q4:'Optimal',lower:false},
+  {name:'Morning Cortisol',unit:'mcg/dL',base:'Not tested',q1:'7–20',q2:'7–18',q3:'7–15',q4:'7–12',lower:false},
+  {name:'ApoB',unit:'mg/dL',base:'Not tested',q1:'<100',q2:'<90',q3:'<85',q4:'<80',lower:true},
+];
+
+const FACILITIES = [
+  {name:'LabMed Egypt',type:'PRIMARY BLOOD LAB',contact:'19314 · +20 110 119 3140 (WhatsApp)',website:'https://labmedegypt.com',note:'All 5 blood packages. Home visit available. Egyptian-German lab. ~$255 for full panel.',services:[['Men\'s Advanced Check-up (40 tests)','3,300 EGP (~$68)'],['Semaglutide/GLP-1 Panel (25 tests)','1,900 EGP (~$39)'],['Vitamins & Minerals Advanced (20 tests)','2,400 EGP (~$49)'],['IBS Advanced Panel (28 tests)','4,000 EGP (~$82)'],['Men\'s Hormone Check-up (7 tests)','800 EGP (~$16)'],['TOTAL — 5 packages','12,400 EGP (~$255)']],intl:false},
+  {name:'Al Mokhtabar',type:'GAP BLOOD TESTS · CAP-ACCREDITED',contact:'19014',website:'https://almokhtabar.com',note:'Only CAP-accredited lab in Egypt. Use for all remaining hormone, autoimmune, and thyroid tests.',services:[['Reverse T3, TPO Antibodies','URGENT — book now'],['SHBG, IGF-1, Morning Cortisol','Hormone gaps'],['ApoB, hs-CRP','Cardiovascular gaps'],['ANA, C3, C4, IL-6','Autoimmune screen'],['Selenium, AFP, H. Pylori, C-Peptide','Remaining gaps'],['Home visit available','218+ branches nationwide']],intl:false},
+  {name:'MRC New Cairo',type:'IMAGING · DEXA · MRI',contact:'19773',website:'https://misrradiologycenter.com',note:'Primary imaging facility. DexaFit Cairo powered by MRC. All USD pricing confirmed.',services:[['DEXA Body Composition','$30'],['DEXA Bone Density','$30'],['MRI Right Shoulder (rotator cuff)','Call for price'],['MRI Bilateral Knees (meniscectomy)','Call for price'],['Whole Body MRI','$750'],['Gold Package (10 tests)','$999']],intl:false},
+  {name:'As-Salam International Hospital',type:'SPECIALIST CONSULTATIONS · PROCEDURES',contact:'19885',website:'https://assih.com',note:'JCI-accredited. Use for STI panel, specialist consultations, VO2 Max, and HBOT inquiry. Maadi + New Cairo.',services:[['HIV, Syphilis, Chlamydia, Gonorrhea, HSV, Lyme','STI panel'],['VO2 Max / CPET (cardiology dept)','Call for price'],['Endocrinology consultation (pharma discussion)','Post-results'],['Dermatology — pre-PT141 mole mapping','Required gate'],['Neurology — MoCA cognitive assessment','Baseline test'],['IV NAD+ and Glutathione','Ask IV therapy dept']],intl:false},
+  {name:'CairoSleep',type:'SLEEP STUDY · POLYSOMNOGRAPHY',contact:'+20 128 216 6655',website:'https://cairosleep.com',note:'55 El-Farik St, Mohandessin. Overnight polysomnography. Retest at 6 months.',services:[['Overnight polysomnography','~$100–$200'],['Sleep apnea severity diagnosis','Critical baseline'],['Oral appliance therapy assessment','Alternative to CPAP'],['6-month retest (post weight loss)','Required checkpoint']],intl:false},
+  {name:'OxyCare Egypt / Cairo HBOT Hospital',type:'HBOT · 120 SESSIONS · CONFIRMED PRICE',contact:'+20 1000051399 · +20 1277110145',website:'https://oxycareegypt.com',note:'400 EGP per session confirmed. 120 sessions = 48,000 EGP (~$985 USD total). Mon/Wed/Fri schedule.',services:[['Price per session','400 EGP (~$8 USD)'],['120 sessions total','48,000 EGP (~$985 USD)'],['Schedule during Cairo trips','Daily Mon–Fri'],['Government hospitals (cheapest)','100–300 EGP ($5–16)'],['OxyMed Hurghada (Red Sea)','Call for price'],['Dolphin Center Hurghada','Call for price']],intl:false},
+  {name:'Premier Care Clinics',type:'IV THERAPY · NAD+ · GLUTATHIONE · OZONE',contact:'+20 1200644663',website:'https://premiercare-eg.com',note:'Nile City Towers, Corniche el Nile + Sheikh Zayed + Fifth Settlement. English speaking. IV ozone, NAD+, Myers Cocktail, Glutathione.',services:[['NAD+ IV 500mg','Call for price'],['Glutathione IV','Call for price'],['Myers Cocktail','Call for price'],['IV Ozone therapy','Call for price'],['Home IV visit available','Call for price']],intl:false},
+  {name:'Cairo Medical Center For Ozone Therapy',type:'OZONE THERAPY · MAH',contact:'Call to confirm',website:'https://ozoneegy.com',note:'4 Ahmed El Zomor St, Nasr City, Cairo. Major autohemotherapy (MAH). Rectal insufflation. Dedicated ozone clinic.',services:[['Major Autohemotherapy (MAH)','Call for price'],['Rectal insufflation','Call for price'],['Ozone water and oil','Call for price'],['New Life Clinics Egypt','ozone-eg.com']],intl:false},
+  {name:'Egypt Vitamins',type:'PEPTIDE SOURCE · PRIMARY',contact:'',website:'https://egyptvitamins.com',note:'Primary peptide source in Egypt. BPC-157, GHK-Cu, Retatrutide, TB-500, and most protocol peptides in stock.',services:[['BPC-157 5mg (Peptide Sciences, 99%)','In stock'],['Retatrutide 10mg, 12mg, 20mg','In stock'],['TB-500, GHK-Cu, Epithalon','In stock'],['CJC-1295 + Ipamorelin, DSIP','In stock'],['Selank, Semax, PT-141, MOTS-c','Check availability'],['PharmaLab Global UAE (backup)','uae.pharmalabglobal.com']],intl:false},
+  {name:'Therapeutic Plasma Exchange',type:'⚠ INTERNATIONAL TRAVEL REQUIRED — YEAR 2',contact:'Switzerland / Germany',website:'',note:'Not available in Egypt as a longevity intervention. Plan for Year 2. Alkahest, Lanserhof, or Swiss longevity clinics. Cost: $8,000–$15,000 per course.',services:[['Alkahest (US/Germany)','$8,000–$15,000'],['Lanserhof Zurich','Premium pricing'],['Clinique La Prairie (Montreux)','$10,000–$30,000'],['Plasmapheresis at As-Salam','Ask — partial equiv'],['Best combined with','Annual Swiss retreat']],intl:true},
+  {name:'Psilocybin Assisted Therapy',type:'⚠ INTERNATIONAL TRAVEL REQUIRED',contact:'Netherlands / Jamaica',website:'',note:'Illegal in Egypt. For the somatic and emotional layer identified in April psoas session — suppressed grief, survival fear. Plan as a dedicated 3–5 day trip.',services:[['Netherlands (legal psilocybin)','€1,500–€3,000'],['Jamaica (legal retreats)','$2,000–$5,000'],['Ketamine infusion (ask As-Salam)','Potentially available Egypt'],['Holotropic breathwork (free equivalent)','Available now in Sinai'],['Vipassana retreat Cairo area (free)','10-day silent retreat']],intl:true},
+];
+
+const SHOPPING = [
+  {source:'Egypt Vitamins',url:'egyptvitamins.com',items:[
+    {name:'BPC-157 Oral Capsules 5mg',note:'Start now — Week 1'},
+    {name:'KPV Oral 5mg',note:'Week 4'},
+    {name:'BPC-157 Injectable 5mg',note:'Week 6'},
+    {name:'TB-500 10mg',note:'Week 8'},
+    {name:'GHK-Cu Injectable + Topical',note:'Week 12 — gated by ALT retest'},
+    {name:'Retatrutide 10mg vial',note:'Week 24 — multiple gates required first'},
+  ]},
+  {source:'Amazon Egypt',url:'amazon.eg',items:[
+    {name:'BPC-157 Oral Capsules',note:'Backup source — immediate delivery'},
+    {name:'Psyllium Husk 500g',note:'Week 1 supplement'},
+    {name:'Mouth tape (surgical or 3M)',note:'Start tonight — sleep apnea'},
+    {name:'Himalayan pink salt large bag',note:'Fasting electrolytes'},
+    {name:'Coffee enema kit',note:'Home colonics — ongoing'},
+    {name:'Dry skin brush',note:'Lymphatic drainage'},
+    {name:'Copper tongue scraper',note:'Daily morning ritual'},
+  ]},
+  {source:'Local Egypt · Markets + Pharmacies',url:'',items:[
+    {name:'Black seed oil (Nigella Sativa)',note:'Widely available in Sinai and Cairo'},
+    {name:'Apple cider vinegar — raw, unfiltered',note:'Before every meal'},
+    {name:'Castor oil — cold pressed',note:'Liver pack 3x/week'},
+    {name:'Organic sesame oil',note:'Oil pulling + Abhyanga'},
+    {name:'Fresh garlic bulbs',note:'Daily — raw in food'},
+    {name:'Turmeric root + black pepper',note:'Daily on food'},
+    {name:'Moringa powder',note:'Morning in water'},
+  ]},
+  {source:'Al Mokhtabar',url:'almokhtabar.com',items:[
+    {name:'Reverse T3 test',note:'URGENT — book immediately'},
+    {name:'TPO Antibodies',note:'URGENT — thyroid autoimmune'},
+    {name:'SHBG',note:'Hormone gap'},
+    {name:'IGF-1',note:'Required before Tesamorelin'},
+    {name:'Morning Cortisol',note:'Adrenal baseline'},
+    {name:'ApoB',note:'Cardiovascular risk'},
+  ]},
+  {source:'International Mail-In',url:'',items:[
+    {name:'TruAge Epigenetic Clock',note:'trudiagnostic.com ~$299 · Do at Week 52'},
+    {name:'DUTCH Complete Hormone Panel',note:'truehealthlabs.com ~$400 · Week 24'},
+    {name:'GI-MAP Stool Analysis',note:'~$350 · Via practitioner'},
+    {name:'OmegaQuant Omega-3 Index',note:'omegaquant.com ~$100 · Week 12'},
+    {name:'FreeStyle Libre 2 CGM',note:'freestyle.abbott/eg-en — free delivery Egypt'},
+    {name:'Doctor\'s Data Heavy Metals',note:'Mail-in · Order Week 8'},
+  ]},
+  {source:'Home Equipment · One-Time Purchase',url:'',items:[
+    {name:'Mild HBOT soft chamber 1.3 atm',note:'$3,000–$5,000 · Consider after Block 1 complete'},
+    {name:'Home ozone generator — medical grade',note:'$300–$800 · Rectal, water, oil use'},
+    {name:'Red light therapy panel',note:'$300–$600 · Mito Red, Hooga, or similar'},
+    {name:'Home blood pressure monitor',note:'$30–$60 · Monitoring during fasts'},
+    {name:'Pulse oximeter',note:'$20–$40 · Fasting monitoring'},
+    {name:'Urine ketone strips',note:'$10 · Extended fast monitoring'},
+  ]},
+];
+
+const COMPARISONS = [
+  ['HBOT 40 sessions clinical','$4,000–$8,000','Cairo hospital 400 EGP/session confirmed','$328 total'],
+  ['Stem cell injections IV','$10,000–$25,000','72-hour quarterly fasts — +300% stem cells','$0'],
+  ['Therapeutic plasma exchange','$8,000–$15,000','5–7 day water fast (deep plasma renewal)','$0'],
+  ['Ozone therapy 10 sessions','$1,500–$3,000','Home ozone generator — daily use','$300–$800'],
+  ['Red light therapy clinical','$2,000–$4,000','Home panel — daily in Sinai','$300–$600'],
+  ['NAD+ IV monthly x12','$3,000–$6,000','Sublingual NMN 500mg daily oral','$480–$960/yr'],
+  ['Colonics x3 sessions','$150–$450','Home coffee enema kit — unlimited','$20–$50'],
+  ['Water fast retreat','$3,000–$8,000','Self-directed Sinai fast + tools','$100–$200'],
+  ['Cold plunge machine','$3,000–$8,000','Red Sea daily swimming — free','$0'],
+  ['Infrared sauna','$2,000–$6,000','Sinai sun sweating 20–30 min daily','$0'],
+  ['Lymphatic drainage massage','$80–$150/session','Dry brush + sesame oil Abhyanga','$20 tools'],
+];
+
+const INDUCERS = [
+  {mol:'Glutathione',methods:'Raw garlic daily · Asparagus · Eggs · Cooked broccoli · Turmeric · Exercise · Fasting · Cold Red Sea immersion · Sleep'},
+  {mol:'NAD+',methods:'Fasting (most powerful) · Exercise · Sunlight on skin · Cold exposure · Sinai sun sweating · Niacin-rich fish and eggs'},
+  {mol:'BDNF',methods:'Fasting + ketosis · Exercise (most potent) · Cold immersion · Omega-3 from sardines · Turmeric · Deep sleep'},
+  {mol:'Nitric Oxide',methods:'Sunlight on skin (UV releases NO from skin stores) · Garlic · Pomegranate · Nasal breathing always · Exercise'},
+  {mol:'Testosterone',methods:'Deep sleep (80% produced during sleep) · Cold Red Sea · Sunlight · Zinc from pumpkin seeds · Fasting · Resistance exercise'},
+  {mol:'Serotonin',methods:'Morning sunlight within 30 min of waking · Exercise · Eggs (tryptophan) · Fatty fish · Gratitude · Social connection'},
+  {mol:'Autophagy',methods:'Fasting (begins 16hrs, peaks 48–72hrs) · Black coffee · Green tea EGCG · Turmeric · Exercise · Cold'},
+  {mol:'Stem Cells',methods:'72-hour fasting (+300%) · HBOT (+800% over 40 sessions) · Cold immersion · Exercise · Deep sleep'},
+  {mol:'Cortisol ↓',methods:'Diaphragmatic breathing · Sinai nature 20 min · Grounding barefoot · Cold immersion · Ashwagandha · Chamomile · Prayer'},
+  {mol:'Melatonin',methods:'Complete darkness after sunset · No screens 2 hours before bed · Morning sunlight (sets circadian clock) · Walnuts · Pistachios'},
+];
+
+const SINAI_ITEMS = [
+  {title:'Red Sea Swimming',desc:'Cold immersion + mineral absorption + stem cells + testosterone + nervous system regulation. Free and infinite.'},
+  {title:'Sinai Sunlight',desc:'Vitamin D synthesis + circadian reset + serotonin + nitric oxide from skin. 20–30 min daily before 10am.'},
+  {title:'Desert Silence',desc:'Documented cortisol reduction + immune function + nervous system regulation from nature immersion.'},
+  {title:'Sinai Earth',desc:'Barefoot grounding — measurable reduction in inflammatory markers equivalent to anti-inflammatory medication.'},
+  {title:'Desert Air',desc:'Negative ions from desert and coastal air improve lung function, mood, serotonin, and sleep quality.'},
+  {title:'Red Sea Minerals',desc:'Magnesium, iodine, potassium absorbed transdermally during swimming. Natural mineral therapy.'},
+];
+
+const EAT_FOODS = ['Sardines, mackerel, sea bass, anchovies — fatty fish daily','Eggs — 2 to 3 daily, any preparation','Olive oil — 2–3 tablespoons daily','Ghee — 1–2 tablespoons daily — heals liver and gut','Leafy greens — spinach, rocket, kale — unlimited','Non-starchy vegetables — broccoli, cauliflower, zucchini, cucumber — unlimited','Garlic — raw daily — #1 glutathione precursor','Turmeric with black pepper — anti-inflammatory daily','Ginger — fresh or tea, daily','Cinnamon — daily on food — insulin sensitivity','Almonds, walnuts, pistachios — small handfuls','Brazil nuts — 2 daily — highest selenium food on Earth','Blueberries, strawberries, raspberries — only fruits allowed freely','Lentils — max half cup per meal, always with protein','Black seed oil — 1 tsp daily','Bitter melon — powerful insulin sensitizer','Apple cider vinegar — 1 tbsp before every meal','Pomegranate — testosterone support, small portions','Bone broth — make from fish bones weekly'];
+
+const AVOID_FOODS = ['All sugar — zero exceptions. Honey, agave, syrups, candy','White bread, white rice, white pasta — immediate insulin spike','All pastries, cakes, biscuits, croissants, cookies','Fruit juice of any kind — including fresh squeezed','Soft drinks including diet versions','Mango, banana, grapes, watermelon, dates, figs, pineapple','Potatoes — white or sweet — spike insulin immediately','Corn — inflammatory and high carbohydrate','Cashews — highest carb nut','Fried foods of any kind','Fast food — never','Alcohol — inflames the already stressed liver','Soy — suppresses thyroid hormone production','Raw cruciferous vegetables — always cook broccoli and cauliflower','Sunflower oil, corn oil, canola oil — inflammatory','Processed packaged snacks','Large meals even of healthy food — portion size matters','Eating after 8pm — insulin sensitivity drops after dark'];
+
+const MEALS = [
+  {time:'12:00pm — Break Fast',items:['ACV 10 min before · Berberine 500mg','Protein FIRST — grilled fish or eggs','Ghee or olive oil generously','Abundant non-starchy vegetables','Garlic + turmeric + ginger on everything','Half cup lentils max if desired']},
+  {time:'3:00–4:00pm — Optional Snack',items:['Small handful almonds or walnuts','Chamomile or dandelion tea','Only if genuinely hungry']},
+  {time:'6:30–7:00pm — Last Meal',items:['Grilled fish + vegetables + ghee','Lemon, garlic, herbs','Berberine 500mg before eating','Milk thistle with meal']},
+  {time:'8:00pm — Window Closes',items:['No food from this point','Herbal teas only','Fast begins — 16 hours to 12pm tomorrow']},
+];
+
+// ═══════════════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════════════
+function save(key,val){try{localStorage.setItem('sekhem_'+key,JSON.stringify(val))}catch(e){}}
+function load(key,def=null){try{const v=localStorage.getItem('sekhem_'+key);return v!==null?JSON.parse(v):def}catch(e){return def}}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.nav-tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-'+t.dataset.panel).classList.add('active');
+  };
+});
+
+// ═══════════════════════════════════════════════════════════
+// MISSION CONTROL
+// ═══════════════════════════════════════════════════════════
+function daysSince(d){return Math.floor((new Date()-new Date(d))/(1000*60*60*24))}
+function weeksIn(){return Math.floor(daysSince(START_DATE)/7)+1}
+
+function renderMission(){
+  const day=daysSince(START_DATE)+1;
+  const week=weeksIn();
+  document.getElementById('protocolDay').textContent=`PROTOCOL START: APRIL 22, 2026 · DAY ${day} · WEEK ${week}`;
+
+  // KPIs
+  const hbotDone=load('hbot_sessions',[]).length;
+  const kpis=[
+    {val:`W${week}`,label:'PROTOCOL WEEK'},
+    {val:`D${day}`,label:'PROTOCOL DAY'},
+    {val:hbotDone,label:'HBOT SESSIONS'},
+    {val:`${Math.round(hbotDone/120*100)}%`,label:'HBOT COMPLETE'},
+    {val:'Apr 22',label:'START DATE'},
+  ];
+  document.getElementById('kpiRow').innerHTML=kpis.map(k=>`<div class="kpi"><div class="kpi-val">${k.val}</div><div class="kpi-label">${k.label}</div></div>`).join('');
+
+  // Current peptide
+  const currPep=PEPTIDES.find(p=>{
+    const pw=parseInt(p.week.replace('Week ',''));
+    return week>=pw&&(PEPTIDES[p.num]?week<parseInt(PEPTIDES[p.num].week.replace('Week ','')):true);
+  })||PEPTIDES[0];
+  const nextPep=PEPTIDES[currPep.num]||null;
+  document.getElementById('currentPeptide').textContent=`${currPep.name} · ${currPep.week}`;
+  document.getElementById('nextPeptide').textContent=nextPep?`${nextPep.name} · ${nextPep.week}`:'Protocol Complete';
+
+  // Next action
+  const actions=[
+    {cond:week<2,text:'Start BPC-157 Oral 250mcg — available on egyptvitamins.com and amazon.eg NOW'},
+    {cond:week<4&&week>=2,text:'Continue BPC-157 · Order KPV for Week 4 · Book Al Mokhtabar for Reverse T3 + TPO'},
+    {cond:week>=4&&week<6,text:'Add KPV Oral · Book MRC New Cairo for Whole Body MRI · Book first Cairo HBOT trip'},
+    {cond:week>=6&&week<8,text:'Transition to BPC-157 Injectable · Schedule Cairo HBOT Block 1 · Continue all supplements'},
+    {cond:week>=8&&week<12,text:'Add TB-500 · Order heavy metal + mycotoxin mail-in kits · Continue HBOT Block 1'},
+    {cond:week>=12,text:'Review 90-day retest results at LabMed + Al Mokhtabar · Gate check for GHK-Cu'},
+  ];
+  const action=actions.find(a=>a.cond)||{text:'Continue established protocol — all phases on track'};
+  document.getElementById('nextActionText').textContent=action.text;
+
+  // Checklist
+  const today=new Date().toDateString();
+  const savedDay=load('check_day','');
+  if(savedDay!==today){save('check_day',today);save('check_state',{});}
+  const state=load('check_state',{});
+  const streaks=load('check_streaks',{});
+  document.getElementById('checkDate').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+  document.getElementById('checklist').innerHTML=CHECKLIST_ITEMS.map(item=>{
+    const done=state[item.id]||false;
+    const streak=streaks[item.id]||0;
+    return `<div class="check-item${done?' done':''}" onclick="toggleCheck('${item.id}')">
+      <div class="check-box">${done?'✓':''}</div>
+      <div class="check-label">${item.label}</div>
+      ${streak>1?`<div class="streak-badge">${streak}d</div>`:''}
+    </div>`;
+  }).join('');
+
+  const notes=load('notes_mission','');
+  const el=document.getElementById('missionNotes');
+  el.value=notes;
+  el.oninput=()=>save('notes_mission',el.value);
+}
+
+function toggleCheck(id){
+  const state=load('check_state',{});
+  const streaks=load('check_streaks',{});
+  state[id]=!state[id];
+  if(state[id]) streaks[id]=(streaks[id]||0)+1;
+  save('check_state',state);
+  save('check_streaks',streaks);
+  renderMission();
+}
+
+// ═══════════════════════════════════════════════════════════
+// BIOMARKERS
+// ═══════════════════════════════════════════════════════════
+function progressColor(base,cur,tgt,higher){
+  if(!cur||isNaN(cur)) return 'var(--grey)';
+  const improved=higher?(cur>base):(cur<base);
+  const atTarget=higher?(cur>=parseFloat(tgt)):(cur<=parseFloat(tgt));
+  if(atTarget) return 'var(--green)';
+  if(improved) return 'var(--amber)';
+  return 'var(--red)';
+}
+
+function progressPct(base,cur,tgt,higher){
+  if(!cur||isNaN(cur)) return 0;
+  if(higher){
+    const range=tgt-base;
+    if(range<=0) return 100;
+    return Math.min(100,Math.max(0,((cur-base)/range)*100));
+  }else{
+    const range=base-tgt;
+    if(range<=0) return 100;
+    return Math.min(100,Math.max(0,((base-cur)/range)*100));
+  }
+}
+
+function renderBMCard(bm,type){
+  const cls=type==='critical'?'critical':type==='subopt'?'subopt':'ok';
+  return `<div class="bm-card ${cls}">
+    <div class="bm-header">
+      <div>
+        <div class="bm-name">${bm.name}</div>
+        <div class="bm-ref">Reference: ${bm.ref}</div>
+        ${bm.note?`<div style="font-size:10px;color:var(--grey);margin-top:2px">${bm.note}</div>`:''}
+      </div>
+      <div style="text-align:right">
+        <div class="bm-val" style="color:${type==='critical'?'var(--red)':type==='subopt'?'var(--amber)':'var(--green)'}">${bm.result}</div>
+        <div class="bm-target">Target: ${bm.target}</div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width:${bm.base&&bm.tgt?progressPct(bm.base,bm.base,bm.tgt,bm.higher||false):'50'}%;background:${type==='critical'?'var(--red)':type==='subopt'?'var(--amber)':'var(--green)'}"></div>
+    </div>
+  </div>`;
+}
+
+function renderBiomarkers(){
+  document.getElementById('criticalBM').innerHTML=BIOMARKERS_CRITICAL.map(b=>renderBMCard(b,'critical')).join('');
+  document.getElementById('suboptBM').innerHTML=BIOMARKERS_SUBOPT.map(b=>renderBMCard(b,'subopt')).join('');
+  document.getElementById('cleanBM').innerHTML='<div class="card"><div style="columns:2;gap:20px">'+BIOMARKERS_CLEAN.map(b=>`<div style="font-size:11px;color:var(--grey-light);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--green)">✓ ${b}</div>`).join('')+'</div></div>';
+  const el=document.getElementById('bioNotes');
+  el.value=load('notes_bio','');
+  el.oninput=()=>save('notes_bio',el.value);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DIET
+// ═══════════════════════════════════════════════════════════
+function renderDiet(){
+  document.getElementById('eatList').innerHTML=EAT_FOODS.map(f=>`<div class="food-item">${f}</div>`).join('');
+  document.getElementById('avoidList').innerHTML=AVOID_FOODS.map(f=>`<div class="food-item avoid">${f}</div>`).join('');
+  document.getElementById('mealStructure').innerHTML=MEALS.map(m=>`
+    <div class="meal-time-block">
+      <div class="meal-time">${m.time}</div>
+      ${m.items.map(i=>`<div style="font-size:11px;color:var(--grey-light);padding:2px 0">· ${i}</div>`).join('')}
+    </div>`).join('');
+  const el=document.getElementById('dietNotes');
+  el.value=load('notes_diet','');
+  el.oninput=()=>save('notes_diet',el.value);
+}
+
+// ═══════════════════════════════════════════════════════════
+// FASTING
+// ═══════════════════════════════════════════════════════════
+function renderFasting(){
+  // Next fast countdown
+  const nextFast=new Date('2026-05-22');
+  const diff=Math.ceil((nextFast-new Date())/(1000*60*60*24));
+  document.getElementById('nextFastCountdown').textContent=Math.max(0,diff);
+  document.getElementById('nextFastDate').textContent=`FIRST 72-HOUR FAST · ~MAY 22, 2026`;
+
+  document.getElementById('fastCalendar').innerHTML=FASTING_CALENDAR.map(f=>`
+    <div class="fast-event" style="border-color:${f.color}20;border-left:3px solid ${f.color}">
+      <div class="fast-month" style="color:${f.color}">${f.month}</div>
+      <div class="fast-dur">${f.dur}</div>
+      <div class="fast-type">${f.type}</div>
+      <div style="font-size:9px;color:var(--grey);margin-top:4px">${f.date}</div>
+    </div>`).join('');
+
+  document.getElementById('fastProtocol').innerHTML=`<div style="background:var(--bg3);border-radius:4px;overflow:hidden">
+    ${FAST_PROTOCOL_STEPS.map(s=>`<div class="fast-protocol-step"><div class="fast-hour">${s.hours}</div><div class="fast-desc">${s.desc}</div></div>`).join('')}
+  </div>`;
+
+  const el=document.getElementById('fastNotes');
+  el.value=load('notes_fast','');
+  el.oninput=()=>save('notes_fast',el.value);
+}
+
+// ═══════════════════════════════════════════════════════════
+// HBOT
+// ═══════════════════════════════════════════════════════════
+function renderHBOT(){
+  const sessions=load('hbot_sessions',[]);
+  const done=sessions.length;
+  document.getElementById('hbotDone').textContent=done;
+  document.getElementById('hbotCost').textContent=(done*400).toLocaleString();
+  document.getElementById('hbotPct').textContent=Math.round(done/120*100)+'%';
+  document.getElementById('hbotProgressBar').style.width=Math.round(done/120*100)+'%';
+
+  let dots='';
+  for(let i=1;i<=120;i++){
+    const isDone=sessions.includes(i);
+    const block=i<=40?1:i<=80?2:3;
+    dots+=`<div class="session-dot${isDone?' done':''}" onclick="toggleHBOT(${i})" title="Block ${block} · Session ${i}">${isDone?'✓':i}</div>`;
+    if(i===40||i===80) dots+='<div style="grid-column:1/-1;height:6px;background:rgba(201,168,76,0.1);border-radius:2px;margin:2px 0"></div>';
+  }
+  document.getElementById('hbotSessions').innerHTML=dots;
+
+  document.getElementById('cairoBlocks').innerHTML=CAIRO_BLOCKS.map(b=>`
+    <div class="cairo-block">
+      <div class="cairo-block-header">
+        <div><div class="cairo-block-title">BLOCK ${b.num} · SESSIONS ${b.sessions}</div><div style="font-size:10px;color:var(--grey);margin-top:2px">${b.purpose}</div></div>
+        <div class="cairo-block-dates">${b.dates}</div>
+      </div>
+      <div style="font-size:10px;color:var(--grey);margin-bottom:6px">${b.schedule}</div>
+      <div style="font-size:10px;color:var(--teal);border-top:1px solid rgba(201,168,76,0.1);padding-top:8px"><strong style="color:var(--gold)">BATCH:</strong> ${b.batch}</div>
+    </div>`).join('');
+
+  document.getElementById('hbotBenefits').innerHTML=HBOT_BENEFITS.map(b=>`
+    <div style="display:flex;gap:12px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,0.04);background:var(--bg3)">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--gold);width:100px;flex-shrink:0">${b.val}</div>
+      <div><div style="font-size:11px;font-weight:700;color:var(--white)">${b.name}</div><div style="font-size:10px;color:var(--grey)">${b.desc}</div></div>
+    </div>`).join('');
+
+  document.getElementById('hbotRules').innerHTML=HBOT_RULES.map(r=>`<div style="font-size:11px;color:var(--grey-light);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:8px"><span style="color:var(--gold)">·</span>${r}</div>`).join('');
+
+  const el=document.getElementById('hbotNotes');
+  el.value=load('notes_hbot','');
+  el.oninput=()=>save('notes_hbot',el.value);
+}
+
+function toggleHBOT(n){
+  let sessions=load('hbot_sessions',[]);
+  const i=sessions.indexOf(n);
+  if(i>-1) sessions.splice(i,1);
+  else sessions.push(n);
+  sessions.sort((a,b)=>a-b);
+  save('hbot_sessions',sessions);
+  renderHBOT();
+  renderMission();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUPPLEMENTS
+// ═══════════════════════════════════════════════════════════
+function renderSupplements(){
+  document.getElementById('suppContent').innerHTML=SUPPLEMENTS.map(wk=>`
+    <div class="supp-week">
+      <div class="section-head">${wk.week}</div>
+      <div class="supp-grid">
+        ${wk.items.map(s=>`<div class="supp-card">
+          <div class="supp-name">${s.name}</div>
+          <div class="supp-dose">${s.dose}</div>
+          <div class="supp-time">${s.timing}</div>
+          <div class="supp-why">${s.why}</div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('teaProtocol').innerHTML=`<div style="background:var(--bg3);border-radius:4px;overflow:hidden">
+    ${TEAS.map(t=>`<div style="display:flex;gap:14px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,0.04)">
+      <div style="font-size:11px;color:var(--gold);width:180px;flex-shrink:0">${t.time}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--white);width:160px;flex-shrink:0">${t.tea}</div>
+      <div style="font-size:11px;color:var(--grey)">${t.purpose}</div>
+    </div>`).join('')}
+  </div>`;
+
+  const el=document.getElementById('suppNotes');
+  el.value=load('notes_supp','');
+  el.oninput=()=>save('notes_supp',el.value);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PEPTIDES
+// ═══════════════════════════════════════════════════════════
+function renderPeptides(){
+  const week=weeksIn();
+  document.getElementById('peptideTimeline').innerHTML=PEPTIDES.map(p=>{
+    const pw=parseInt(p.week.replace('Week ',''));
+    const isCurrent=week>=pw&&(PEPTIDES[p.num]?week<parseInt(PEPTIDES[p.num].week.replace('Week ','')):true);
+    const isActive=week>=pw;
+    const cls=isCurrent?'current':isActive?'active-peptide':'locked';
+    return `<div class="peptide-node ${cls}" onclick="showPeptideDetail(${p.num-1})">
+      <div class="p-week">${p.week}</div>
+      <div class="p-name">${p.name}</div>
+      <div class="p-cat">${p.cat}</div>
+      ${isCurrent?'<div style="font-size:9px;color:var(--green);margin-top:4px">● CURRENT</div>':''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('peptideList').innerHTML=PEPTIDES.map(p=>{
+    const pw=parseInt(p.week.replace('Week ',''));
+    const isActive=week>=pw;
+    return `<div class="bm-card ${isActive?'ok':'critical'}" style="cursor:pointer" onclick="showPeptideDetail(${p.num-1})">
+      <div class="bm-header">
+        <div>
+          <div class="bm-name" style="color:var(--white)">#${p.num} ${p.name}</div>
+          <div style="font-size:10px;color:var(--gold)">${p.week} · ${p.cat}</div>
+          <div style="font-size:10px;color:var(--grey-light);margin-top:4px">${p.dose}</div>
+        </div>
+        <div style="text-align:right">
+          <span class="tag ${isActive?'tag-green':'tag-gold'}">${isActive?'ACTIVE':'UPCOMING'}</span>
+          <div style="font-size:10px;color:var(--grey);margin-top:4px">${p.source.split('/')[0]}</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--green);margin-top:6px">${p.benefit.slice(0,100)}${p.benefit.length>100?'...':''}</div>
+      ${p.gate?`<div style="font-size:10px;color:var(--amber);margin-top:4px">Gate: ${p.gate.slice(0,80)}${p.gate.length>80?'...':''}</div>`:''}
+    </div>`;
+  }).join('');
+
+  const el=document.getElementById('peptideNotes');
+  el.value=load('notes_peptides','');
+  el.oninput=()=>save('notes_peptides',el.value);
+}
+
+function showPeptideDetail(idx){
+  const p=PEPTIDES[idx];
+  document.getElementById('pd-name').textContent=p.name;
+  document.getElementById('pd-week').textContent=p.week+' · '+p.cat;
+  document.getElementById('pd-cat').textContent=p.cat;
+  document.getElementById('pd-source').textContent=p.source;
+  document.getElementById('pd-dose').textContent=p.dose;
+  document.getElementById('pd-benefit').textContent=p.benefit;
+  document.getElementById('pd-gate').textContent=p.gate;
+  document.getElementById('pd-storage').textContent=p.storage;
+  document.getElementById('peptideDetail').classList.add('show');
+  document.getElementById('peptideDetail').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIMELINE
+// ═══════════════════════════════════════════════════════════
+function renderTimeline(){
+  const week=weeksIn();
+  const phaseColors=['#1A3A4A','#2D1B4E','#3B1A1A','#1A3B1A'];
+  const phaseBorders=['#2A5A7A','#4D2B7E','#6B2A2A','#2A6B2A'];
+
+  document.getElementById('timelineContent').innerHTML=TIMELINE_PHASES.map((ph,i)=>`
+    <div class="phase-block" style="border:1px solid ${phaseBorders[i]}20">
+      <div class="phase-header" style="background:${phaseColors[i]}">
+        <div>
+          <div class="phase-title" style="color:var(--gold)">PHASE ${ph.num} · ${ph.title}</div>
+          <div style="font-size:10px;color:var(--grey-light);margin-top:2px">${ph.sub}</div>
+        </div>
+        <div class="phase-weeks" style="color:var(--grey-light)">${ph.weeks}</div>
+      </div>
+      ${ph.rows.map(r=>{
+        const rowWeek=parseInt(r.week.replace('Week ',''));
+        const isCurrentWeek=rowWeek===week||rowWeek===week-1||rowWeek===week+1;
+        const isPast=rowWeek<week;
+        return `<div class="timeline-row" style="${isCurrentWeek?'background:rgba(201,168,76,0.08);border-left:3px solid var(--gold)':''}${isPast?'opacity:0.6':''}">
+          <div class="timeline-week">${r.week}</div>
+          <div class="timeline-peptide">${r.peptide||'—'}</div>
+          <div class="timeline-other">${r.other}</div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// DAILY SCHEDULE
+// ═══════════════════════════════════════════════════════════
+function renderSchedule(){
+  document.getElementById('scheduleContent').innerHTML=SCHEDULE.map(s=>`
+    <div class="schedule-row">
+      <div class="sched-time">${s.time}</div>
+      <div class="sched-title">${s.title}</div>
+      <div class="sched-desc">${s.desc}</div>
+    </div>`).join('');
+  const el=document.getElementById('schedNotes');
+  el.value=load('notes_sched','');
+  el.oninput=()=>save('notes_sched',el.value);
+}
+
+// ═══════════════════════════════════════════════════════════
+// NATURAL MEDICINE
+// ═══════════════════════════════════════════════════════════
+function renderNatural(){
+  document.getElementById('comparisonTable').innerHTML=COMPARISONS.map(r=>`
+    <div class="comparison-row">
+      <div class="comp-clinical">${r[0]}</div>
+      <div class="comp-price-bad">${r[1]}</div>
+      <div class="comp-natural">${r[2]}</div>
+      <div class="comp-price-good">${r[3]}</div>
+    </div>`).join('');
+
+  document.getElementById('inducerTable').innerHTML=INDUCERS.map(i=>`
+    <div class="inducer-row">
+      <div class="inducer-mol">${i.mol}</div>
+      <div class="inducer-methods">${i.methods}</div>
+    </div>`).join('');
+
+  document.getElementById('sinaiGrid').innerHTML=SINAI_ITEMS.map(s=>`
+    <div class="card" style="background:rgba(26,140,122,0.05);border-color:rgba(26,140,122,0.2)">
+      <div class="card-title" style="color:var(--teal)">${s.title}</div>
+      <div style="font-size:11px;color:var(--grey-light);line-height:1.6">${s.desc}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROGRESS TRACKER
+// ═══════════════════════════════════════════════════════════
+function getStatusColor(base,val,tgtStr,lower){
+  if(!val||val==='') return 'var(--grey)';
+  const num=parseFloat(val);
+  const tgt=parseFloat(tgtStr);
+  if(isNaN(num)||isNaN(tgt)) return 'var(--gold)';
+  const baseNum=parseFloat(base);
+  if(lower){
+    if(num<=tgt) return 'var(--green)';
+    if(num<baseNum) return 'var(--amber)';
+    return 'var(--red)';
+  }else{
+    if(num>=tgt) return 'var(--green)';
+    if(num>baseNum) return 'var(--amber)';
+    return 'var(--red)';
+  }
+}
+
+function renderProgress(){
+  const quarters=['Q1 — Week 12 (90 Days)','Q2 — Week 24 (6 Months)','Q3 — Week 36 (9 Months)','Q4 — Week 52 (12 Months)'];
+  const qtgts=['q1','q2','q3','q4'];
+  let html='';
+  quarters.forEach((q,qi)=>{
+    const tgtKey=qtgts[qi];
+    html+=`<div class="quarter-block">
+      <div class="quarter-header"><div class="quarter-title">${q}</div><div style="font-size:10px;color:var(--grey)">Enter results — auto color-codes against targets</div></div>
+      <div class="bm-header-row">
+        <div class="bm-header-cell">BIOMARKER</div>
+        <div class="bm-header-cell">BASELINE</div>
+        <div class="bm-header-cell">TARGET</div>
+        <div class="bm-header-cell">YOUR RESULT</div>
+        <div class="bm-header-cell" style="text-align:center">STATUS</div>
+      </div>
+      ${PROGRESS_BIOMARKERS.map(bm=>{
+        const savedVal=load(`progress_${qi}_${bm.name.replace(/\s/g,'_')}`,'');
+        const col=getStatusColor(bm.base,savedVal,bm[tgtKey],bm.lower);
+        return `<div class="bm-input-row">
+          <div class="bm-input-name">${bm.name} <span style="color:var(--grey);font-size:9px">${bm.unit}</span></div>
+          <div class="bm-input-base">${bm.base}</div>
+          <div class="bm-input-target">${bm[tgtKey]}</div>
+          <input class="bm-input-field" type="text" value="${savedVal}" placeholder="Enter result"
+            oninput="saveProgress(${qi},'${bm.name.replace(/\s/g,'_')}',this.value,'${bm.base}','${bm[tgtKey]}',${bm.lower},this)"
+            style="border-color:${col}40;color:${col}">
+          <div class="bm-status-dot" style="background:${col}"></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+  document.getElementById('progressContent').innerHTML=html;
+}
+
+function saveProgress(qi,bmKey,val,base,tgt,lower,input){
+  save(`progress_${qi}_${bmKey}`,val);
+  const col=getStatusColor(base,val,tgt,lower);
+  input.style.borderColor=col+'40';
+  input.style.color=col;
+  input.nextElementSibling.style.background=col;
+}
+
+// ═══════════════════════════════════════════════════════════
+// BODY COMPOSITION
+// ═══════════════════════════════════════════════════════════
+function renderBodyComp(){
+  const quarters=['Q1 — Week 12 (90 Days)','Q2 — Week 24 (6 Months)','Q3 — Week 36 (9 Months)','Q4 — Week 52 (12 Months)'];
+  const fields=[
+    {key:'weight',label:'Weight (kg)',base:'98.45',target:'<74'},
+    {key:'fatpct',label:'Body Fat %',base:'~30%',target:'<15%'},
+    {key:'muscle',label:'Lean Mass (kg)',base:'~69',target:'>75'},
+    {key:'bone',label:'Bone Density',base:'TBD',target:'Optimize'},
+    {key:'visceral',label:'Visceral Fat Score',base:'High',target:'Reduce'},
+  ];
+  document.getElementById('bodyCompQuarters').innerHTML=quarters.map((q,qi)=>`
+    <div class="quarter-comp">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--gold)">${q}</div>
+        <div><label>DATE OF MEASUREMENT</label><input type="date" value="${load(`bc_date_${qi}`,'')}" onchange="save('bc_date_${qi}',this.value)" style="width:160px;margin-top:0"></div>
+      </div>
+      <div class="comp-inputs">
+        ${fields.map(f=>`<div>
+          <label>${f.label}<br><span style="color:var(--grey)">Base: ${f.base} → Target: ${f.target}</span></label>
+          <input type="text" value="${load(`bc_${qi}_${f.key}`,'')}" placeholder="Enter measurement"
+            onchange="save('bc_${qi}_${f.key}',this.value)">
+        </div>`).join('')}
+      </div>
+      <div style="margin-top:10px"><label>NOTES / OBSERVATIONS</label>
+        <input type="text" value="${load(`bc_notes_${qi}`,'')}" placeholder="Body composition notes, how you feel, visual changes..."
+          oninput="save('bc_notes_${qi}',this.value)">
+      </div>
+    </div>`).join('');
+
+  const el=document.getElementById('bodyNotes');
+  el.value=load('notes_body','');
+  el.oninput=()=>save('notes_body',el.value);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TREATMENT LOG
+// ═══════════════════════════════════════════════════════════
+const LOG_COLORS={HBOT:'var(--teal)',HIJAMA:'var(--gold)',FAST:'var(--blue)',SOMATIC:'var(--amber)',OZONE:'var(--green)',IV:'var(--purple,#8E44AD)',PEPTIDE:'var(--grey)',CHIRO:'#E8C876',OTHER:'var(--grey)'};
+
+function renderLog(){
+  const entries=load('log_entries',[]);
+  if(!entries.length){
+    document.getElementById('logEntries').innerHTML='<div class="text-grey text-sm" style="padding:16px">No entries yet. Add your first treatment above.</div>';
+    return;
+  }
+  document.getElementById('logEntries').innerHTML=[...entries].reverse().map((e,i)=>`
+    <div class="log-entry">
+      <div class="log-date">${e.date}</div>
+      <div class="log-type" style="background:${LOG_COLORS[e.type]||'var(--grey)'}20;color:${LOG_COLORS[e.type]||'var(--grey)'};border:1px solid ${LOG_COLORS[e.type]||'var(--grey)'}40">${e.type}</div>
+      <div class="log-note">
+        ${e.note}
+        ${e.somatic?`<br><span style="color:var(--amber);font-size:10px">Somatic: ${e.somatic}</span>`:''}
+      </div>
+      <div onclick="deleteLog(${entries.length-1-i})" style="cursor:pointer;color:var(--grey);font-size:12px;padding:0 4px;flex-shrink:0">✕</div>
+    </div>`).join('');
+}
+
+function addLogEntry(){
+  const date=document.getElementById('logDate').value;
+  const type=document.getElementById('logType').value;
+  const note=document.getElementById('logNote').value;
+  const somatic=document.getElementById('logSomatic').value;
+  if(!date||!note) return;
+  const entries=load('log_entries',[]);
+  entries.push({date,type,note,somatic});
+  save('log_entries',entries);
+  document.getElementById('logDate').value='';
+  document.getElementById('logNote').value='';
+  document.getElementById('logSomatic').value='';
+  renderLog();
+}
+
+function deleteLog(idx){
+  const entries=load('log_entries',[]);
+  entries.splice(idx,1);
+  save('log_entries',entries);
+  renderLog();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SHOPPING
+// ═══════════════════════════════════════════════════════════
+function renderShopping(){
+  document.getElementById('shoppingContent').innerHTML=SHOPPING.map(s=>`
+    <div class="shop-source">
+      <div class="shop-source-header">
+        <div class="shop-source-name">${s.source}</div>
+        ${s.url?`<a href="https://${s.url}" target="_blank" class="shop-source-url">${s.url} ↗</a>`:''}
+      </div>
+      ${s.items.map(i=>`<div class="shop-item">
+        <div>
+          <div class="shop-item-name">${i.name}</div>
+          <div class="shop-item-note">${i.note}</div>
+        </div>
+      </div>`).join('')}
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// FACILITIES
+// ═══════════════════════════════════════════════════════════
+function renderFacilities(){
+  document.getElementById('facilitiesContent').innerHTML=`
+    <div style="font-size:11px;color:var(--grey);margin-bottom:16px">All Egypt-based unless marked with ⚠ International Travel Required. Click phone numbers to call, click websites to visit.</div>
+    ${FACILITIES.map(f=>`
+    <div class="fac-card${f.intl?' fac-intl':''}">
+      <div class="fac-header">
+        <div>
+          <div class="fac-name">${f.name}</div>
+          <div class="fac-type">${f.type}</div>
+        </div>
+        ${f.intl?'<span class="tag tag-amber">INTERNATIONAL TRAVEL</span>':'<span class="tag tag-green">EGYPT</span>'}
+      </div>
+      <div class="fac-body">
+        <div style="font-size:11px;color:var(--grey-light);margin-bottom:8px">${f.note}</div>
+        <div class="fac-services">
+          ${f.services.map(s=>`<div class="fac-service"><span>${s[0]}</span><span class="fac-service-price">${s[1]}</span></div>`).join('')}
+        </div>
+        <div class="fac-actions">
+          ${f.contact&&f.contact.match(/\+20/)?`<a href="tel:${f.contact.split(' ')[0]}" class="fac-btn${f.intl?' fac-intl':''}">CALL ${f.contact}</a>`:''}
+          ${f.contact&&!f.contact.match(/\+20/)&&!f.contact.includes('http')?`<span class="fac-btn${f.intl?' fac-intl':''}">${f.contact}</span>`:''}
+          ${f.website?`<a href="${f.website}" target="_blank" class="fac-btn${f.intl?' fac-intl':''}">VISIT WEBSITE ↗</a>`:''}
+        </div>
+      </div>
+    </div>`).join('')}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// VAPING TRACKER
+// ═══════════════════════════════════════════════════════════
+function renderVaping(){
+  const quitDate=load('quit_date',null);
+  if(!quitDate){
+    document.getElementById('vapeSetup').style.display='block';
+    document.getElementById('vapeDays').textContent='?';
+    document.getElementById('vapeSince').textContent='Set your quit date to begin tracking';
+  }else{
+    document.getElementById('vapeSetup').style.display='none';
+    const days=Math.max(0,Math.floor((new Date()-new Date(quitDate))/(1000*60*60*24)));
+    document.getElementById('vapeDays').textContent=days;
+    document.getElementById('vapeSince').textContent=`Since ${new Date(quitDate).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
+  }
+}
+
+function setQuitDate(){
+  const d=document.getElementById('quitDateInput').value;
+  if(d){save('quit_date',d);renderVaping();}
+}
+
+function resetQuitDate(){
+  if(confirm('Reset quit date? This will clear your streak.')){
+    save('quit_date',null);
+    document.getElementById('vapeSetup').style.display='block';
+    document.getElementById('vapeDays').textContent='?';
+    document.getElementById('vapeSince').textContent='Set your quit date to begin tracking';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+function initAll(){
+  renderMission();
+  renderBiomarkers();
+  renderDiet();
+  renderFasting();
+  renderHBOT();
+  renderSupplements();
+  renderPeptides();
+  renderTimeline();
+  renderSchedule();
+  renderNatural();
+  renderProgress();
+  renderBodyComp();
+  renderLog();
+  renderShopping();
+  renderFacilities();
+  renderVaping();
+
+  // Set today in log date
+  document.getElementById('logDate').value=new Date().toISOString().split('T')[0];
+
+  // Auto-scroll active nav tab into view
+  document.querySelector('.nav-tab.active')?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+initAll();
+</script>
+</body>
+</html>
